@@ -16,7 +16,7 @@ metadata:
 spec:
   chart:
     spec:
-      chart: elastic-operator-crd
+      chart: eck-operator-crds
       sourceRef:
         kind: HelmRepository
         name: elastic
