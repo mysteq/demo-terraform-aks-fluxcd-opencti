@@ -1,0 +1,31 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: elastic
+  namespace: elastic-system
+spec:
+  interval: 1h0s
+  url: https://helm.elastic.co
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: elastic-operator-crd
+  namespace: elastic-system
+spec:
+  chart:
+    spec:
+      chart: elastic-operator-crd
+      sourceRef:
+        kind: HelmRepository
+        name: elastic
+      version: '>=2.8.0'
+  interval: 1h0s
+  releaseName: elastic-operator-crd
+  targetNamespace: elastic-system
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+---
