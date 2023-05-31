@@ -5,3 +5,4 @@ metadata:
   namespace: flux-system
 resources:
 - namespace.yaml
+- elasticsearch.yaml
