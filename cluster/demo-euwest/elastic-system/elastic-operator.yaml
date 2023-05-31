@@ -20,6 +20,8 @@ spec:
   upgrade:
     crds: Skip
   values:
+    installCRDs: false
+    createClusterScopedResources: false
     config:
       validateStorageClass: false
     webhook:
