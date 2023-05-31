@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - namespace.yaml
 - elastic-operator-crd.yaml
+- elastic-operator.yaml

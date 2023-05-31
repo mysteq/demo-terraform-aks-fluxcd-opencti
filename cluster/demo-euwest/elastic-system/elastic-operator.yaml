@@ -1,0 +1,27 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: elastic-operator
+  namespace: elastic-system
+spec:
+  chart:
+    spec:
+      chart: eck-operator
+      sourceRef:
+        kind: HelmRepository
+        name: elastic
+      version: '>=2.8.0'
+  interval: 1h0s
+  releaseName: elastic-operator
+  targetNamespace: elastic-system
+  install:
+    crds: Skip
+  upgrade:
+    crds: Skip
+  values:
+    config:
+      validateStorageClass: false
+    webhook:
+      enabled: false
+---
