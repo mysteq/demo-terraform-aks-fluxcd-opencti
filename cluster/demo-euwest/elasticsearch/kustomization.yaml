@@ -1,9 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 metadata:
-  name: elastic-system
+  name: elasticsearch
   namespace: flux-system
 resources:
 - namespace.yaml
-- elastic-operator-crd.yaml
-- elastic-operator.yaml
