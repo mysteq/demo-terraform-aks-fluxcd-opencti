@@ -79,6 +79,12 @@ module "kubernetes" {
 
   workload_identity_enabled = true
 
+  default_node_pool = {
+    name       = "default"
+    node_count = 1
+    vm_size    = "Standard_B8ms"
+  }
+
   tags = {
     environment = "demo"
   }
