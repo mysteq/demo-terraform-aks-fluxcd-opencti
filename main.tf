@@ -29,7 +29,14 @@ resource "azurerm_key_vault" "demo" {
 
     key_permissions = [
       "Create",
+      "Delete",
       "Get",
+      "Purge",
+      "Recover",
+      "Update",
+      "GetRotationPolicy",
+      "SetRotationPolicy",
+      "Encrypt",
     ]
 
     secret_permissions = [
@@ -37,7 +44,7 @@ resource "azurerm_key_vault" "demo" {
       "Get",
       "Delete",
       "Purge",
-      "Recover"
+      "Recover",
     ]
 
     storage_permissions = [
@@ -51,6 +58,7 @@ resource "azurerm_key_vault" "demo" {
 
     key_permissions = [
       "Get",
+      "Decrypt",
     ]
 
     secret_permissions = [
@@ -63,10 +71,29 @@ resource "azurerm_key_vault" "demo" {
   }
 }
 
-resource "azurerm_key_vault_secret" "demo" {
-  name         = "aks-sops-key"
-  value        = "szechuan"
+resource "azurerm_key_vault_key" "demo" {
+  name         = "sops-key"
   key_vault_id = azurerm_key_vault.demo.id
+  key_type     = "RSA"
+  key_size     = 2048
+
+  key_opts = [
+    "decrypt",
+    "encrypt",
+    "sign",
+    "unwrapKey",
+    "verify",
+    "wrapKey",
+  ]
+
+  rotation_policy {
+    automatic {
+      time_before_expiry = "P30D"
+    }
+
+    expire_after         = "P90D"
+    notify_before_expiry = "P29D"
+  }
 }
 
 module "kubernetes" {

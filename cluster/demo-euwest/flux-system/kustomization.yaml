@@ -3,4 +3,28 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
-- serviceaccount-sops.yaml
+
+patches:
+  - patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: kustomize-controller
+        namespace: flux-system
+        annotations:
+          azure.workload.identity/client-id: 444170f4-db6f-45da-a1ba-efd834c68f10
+        labels:
+          azure.workload.identity/use: "true"
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: kustomize-controller
+        namespace: flux-system
+        labels:
+          azure.workload.identity/use: "true"
+      spec:
+        template:
+          metadata:
+            labels:
+              azure.workload.identity/use: "true"

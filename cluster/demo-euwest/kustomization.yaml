@@ -5,4 +5,3 @@ resources:
   - elastic-system.yaml
   - elasticsearch.yaml
   - minio.yaml
-  - test-msal.yaml
