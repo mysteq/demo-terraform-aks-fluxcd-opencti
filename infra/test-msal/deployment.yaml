@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: quick-start
+  namespace: flux-system
+  labels:
+    azure.workload.identity/use: "true"
+spec:
+  serviceAccountName: sops
+  containers:
+    - image: ghcr.io/azure/azure-workload-identity/msal-go
+      name: oidc
+      env:
+      - name: KEYVAULT_URL
+        value: https://demo-aks-westeu.vault.azure.net/
+  nodeSelector:
+    kubernetes.io/os: linux
