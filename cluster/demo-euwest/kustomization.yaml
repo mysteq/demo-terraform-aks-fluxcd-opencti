@@ -6,3 +6,4 @@ resources:
   - elasticsearch.yaml
   - azure-workload-identity-system.yaml
   - minio.yaml
+  - test-msal.yaml
