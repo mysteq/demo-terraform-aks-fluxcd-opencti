@@ -13,5 +13,7 @@ spec:
       env:
       - name: KEYVAULT_URL
         value: https://demo-aks-westeu.vault.azure.net/
+      - name: SECRET_NAME 
+        value: aks-sops-key
   nodeSelector:
     kubernetes.io/os: linux
