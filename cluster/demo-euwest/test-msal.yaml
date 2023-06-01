@@ -10,5 +10,4 @@ spec:
   path: ./infra/test-msal
   prune: true
   wait: true
-  dependsOn: 
-    - name: azure-workload-identity-system
+
