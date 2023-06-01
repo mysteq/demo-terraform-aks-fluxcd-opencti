@@ -1,4 +1,13 @@
 ---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: elastic
+  namespace: elastic-system
+spec:
+  interval: 1h0s
+  url: https://helm.elastic.co
+---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -16,12 +25,10 @@ spec:
   releaseName: elastic-operator
   targetNamespace: elastic-system
   install:
-    crds: Skip
+    crds: Create
   upgrade:
-    crds: Skip
+    crds: CreateReplace
   values:
-    installCRDs: false
-    createClusterScopedResources: true
     config:
       validateStorageClass: false
     webhook:
