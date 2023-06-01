@@ -138,6 +138,6 @@ resource "azurerm_federated_identity_credential" "demo" {
   issuer              = data.azurerm_kubernetes_cluster.demo.oidc_issuer_url
   audience            = ["api://AzureADTokenExchange"]
   parent_id           = azurerm_user_assigned_identity.demo.id
-  subject             = "system:serviceaccount:flux-system:sops"
+  subject             = "system:serviceaccount:flux-system:kustomize-controller"
 }
 
