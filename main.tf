@@ -37,6 +37,8 @@ resource "azurerm_key_vault" "demo" {
       "GetRotationPolicy",
       "SetRotationPolicy",
       "Encrypt",
+      "Decrypt",
+      "List"
     ]
 
     secret_permissions = [
@@ -45,6 +47,7 @@ resource "azurerm_key_vault" "demo" {
       "Delete",
       "Purge",
       "Recover",
+      "List"
     ]
 
     storage_permissions = [

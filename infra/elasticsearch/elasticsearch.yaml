@@ -6,6 +6,8 @@ metadata:
   namespace: elasticsearch
 spec:
   version: 8.8.0
+  secureSettings:
+  - secretName: elasticsearch-config-secret
   nodeSets:
   - name: default
     count: 1
