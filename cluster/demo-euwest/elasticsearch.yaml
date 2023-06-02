@@ -14,3 +14,5 @@ spec:
     - name: elastic-system
   decryption:
     provider: sops
+    secretRef:
+      name: sops-keys
