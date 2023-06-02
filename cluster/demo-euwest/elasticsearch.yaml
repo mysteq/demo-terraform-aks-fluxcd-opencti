@@ -12,3 +12,5 @@ spec:
   wait: true
   dependsOn: 
     - name: elastic-system
+  decryption:
+    provider: sops
