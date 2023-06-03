@@ -31,9 +31,3 @@ patches:
               azure.workload.identity/use: "true"
             annotations:
               azure.workload.identity/inject-proxy-sidecar: "true"
-          spec:
-            containers:
-            - name: manager
-              env:
-              - name: AZURE_AUTH_METHOD
-                value: msi
