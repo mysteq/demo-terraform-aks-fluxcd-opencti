@@ -30,6 +30,7 @@ patches:
           metadata:
             labels:
               azure.workload.identity/use: "true"
+              azure.workload.identity/inject-proxy-sidecar: "true"
           spec:
             containers:
             - name: manager
