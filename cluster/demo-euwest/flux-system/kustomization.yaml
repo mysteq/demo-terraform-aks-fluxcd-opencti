@@ -25,12 +25,13 @@ patches:
         labels:
           azure.workload.identity/use: "true"
       spec:
-        containers:
-        - name: manager
-          env:
-          - name: AZURE_AUTH_METHOD
-            value: msi
         template:
           metadata:
             labels:
               azure.workload.identity/use: "true"
+          spec:
+            containers:
+            - name: manager
+              env:
+              - name: AZURE_AUTH_METHOD
+                value: msi
