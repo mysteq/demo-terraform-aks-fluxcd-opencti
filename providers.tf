@@ -4,6 +4,14 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.56.0"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.2.1"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.5.1"
+    }
   }
   backend "azurerm" {
     resource_group_name  = "tfstatedemoaks"

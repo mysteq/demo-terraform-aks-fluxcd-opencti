@@ -10,10 +10,23 @@ resource "azurerm_user_assigned_identity" "demo" {
   location            = azurerm_resource_group.demo.location
   name                = "demo-aks-ui-westeu"
   resource_group_name = azurerm_resource_group.demo.name
+
+  provisioner "local-exec" {
+    command = "sed -i '' -r 's/client-id: (.*)/client-id: ${azurerm_user_assigned_identity.demo.client_id}/g' cluster/demo-euwest/flux-system/kustomization.yaml"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i '' -r 's/clientId: (.*)/clientId: ${azurerm_user_assigned_identity.demo.client_id}/g' cluster/demo-euwest/flux-system/secret.yaml"
+  }
+
+}
+
+resource "random_id" "id" {
+	  byte_length = 2
 }
 
 resource "azurerm_key_vault" "demo" {
-  name                        = "demo-aks-westeu"
+  name                        = "demo-aks-westeu-${lower(random_id.id.hex)}"
   location                    = azurerm_resource_group.demo.location
   resource_group_name         = azurerm_resource_group.demo.name
   enabled_for_disk_encryption = true
@@ -97,6 +110,20 @@ resource "azurerm_key_vault_key" "demo" {
     expire_after         = "P90D"
     notify_before_expiry = "P29D"
   }
+
+  provisioner "local-exec" {
+    command = "sed -i '' -r 's/azure_keyvault: (.*)/azure_keyvault: ${replace(azurerm_key_vault.demo.vault_uri,"/\\//", "\\/")}keys\\/${azurerm_key_vault_key.demo.name}\\/${azurerm_key_vault_key.demo.version}/g' .sops.yaml"
+  }
+
+  provisioner "local-exec" {
+    command = "sops -e --in-place infra/elasticsearch/secret.yaml"
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "sops -d --in-place infra/elasticsearch/secret.yaml"
+  }
+
 }
 
 module "kubernetes" {
@@ -127,6 +154,12 @@ data "azurerm_kubernetes_cluster" "demo" {
   depends_on = [
     module.kubernetes
   ]
+}
+
+resource "null_resource" "demo" {
+  provisioner "local-exec" {
+    command = "az aks get-credentials --resource-group ${azurerm_resource_group.demo.name} --name ${data.azurerm_kubernetes_cluster.demo.name} --overwrite-existing"
+  }
 }
 
 resource "azurerm_role_assignment" "example" {
