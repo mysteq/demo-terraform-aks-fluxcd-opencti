@@ -24,11 +24,5 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = "ad3a592d-2f32-4013-8b6a-a290a0aafed2"
-}
-
-provider "azurerm" {
-  features {}
-  alias           = "dns"
-  subscription_id = "646dcda3-7645-475b-8dc3-be6257586e68"
+  subscription_id = "49a743cb-1b0b-4bbd-9986-f9fcf513526f"
 }

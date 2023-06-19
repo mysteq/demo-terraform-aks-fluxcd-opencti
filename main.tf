@@ -158,14 +158,14 @@ data "azurerm_kubernetes_cluster" "demo" {
 
 resource "null_resource" "demo" {
   provisioner "local-exec" {
-    command = "az aks get-credentials --resource-group ${azurerm_resource_group.demo.name} --name ${data.azurerm_kubernetes_cluster.demo.name} --overwrite-existing"
+    command = "az aks get-credentials --resource-group ${azurerm_resource_group.demo.name} --name ${data.azurerm_kubernetes_cluster.demo.name} --overwrite-existing --subscription ${data.azurerm_client_config.current.subscription_id}"
   }
 }
 
 resource "azurerm_role_assignment" "example" {
   scope                = data.azurerm_kubernetes_cluster.demo.id
   role_definition_name = "Azure Kubernetes Service RBAC Cluster Admin"
-  principal_id         = "71edc320-9813-45bb-af1e-2e6eff6fa4d5"
+  principal_id         = "${data.azurerm_client_config.current.object_id}"
 }
 
 resource "azurerm_federated_identity_credential" "demo" {
