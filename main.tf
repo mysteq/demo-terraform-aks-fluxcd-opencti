@@ -127,8 +127,9 @@ resource "azurerm_key_vault_key" "demo" {
 }
 
 module "kubernetes" {
-  source  = "amestofortytwo/aks/azurerm"
-  version = "2.1.0"
+#  source  = "amestofortytwo/aks/azurerm"
+#  version = "2.1.0"
+  source  = "../terraform-azurerm-aks"
 
   name                = "demo-aks-westeu"
   resource_group_name = azurerm_resource_group.demo.name
@@ -164,6 +165,7 @@ resource "null_resource" "demo" {
 
 resource "azurerm_role_assignment" "example" {
   scope                = data.azurerm_kubernetes_cluster.demo.id
+  #scope                = module.kubernetes.aks_id
   role_definition_name = "Azure Kubernetes Service RBAC Cluster Admin"
   principal_id         = "${data.azurerm_client_config.current.object_id}"
 }
