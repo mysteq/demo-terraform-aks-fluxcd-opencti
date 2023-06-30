@@ -22,7 +22,7 @@ resource "azurerm_user_assigned_identity" "demo" {
 }
 
 resource "random_id" "id" {
-	  byte_length = 2
+  byte_length = 2
 }
 
 resource "azurerm_key_vault" "demo" {
@@ -112,7 +112,7 @@ resource "azurerm_key_vault_key" "demo" {
   }
 
   provisioner "local-exec" {
-    command = "sed -i '' -r 's/azure_keyvault: (.*)/azure_keyvault: ${replace(azurerm_key_vault.demo.vault_uri,"/\\//", "\\/")}keys\\/${azurerm_key_vault_key.demo.name}\\/${azurerm_key_vault_key.demo.version}/g' .sops.yaml"
+    command = "sed -i '' -r 's/azure_keyvault: (.*)/azure_keyvault: ${replace(azurerm_key_vault.demo.vault_uri, "/\\//", "\\/")}keys\\/${azurerm_key_vault_key.demo.name}\\/${azurerm_key_vault_key.demo.version}/g' .sops.yaml"
   }
 
   provisioner "local-exec" {
@@ -127,10 +127,10 @@ resource "azurerm_key_vault_key" "demo" {
 }
 
 module "kubernetes" {
-#  source  = "amestofortytwo/aks/azurerm"
-#  version = "2.1.0"
-#  source  = "../terraform-azurerm-aks"
-  source = "github.com/amestofortytwo/terraform-azurerm-aks?ref=53fa0f2f4b3e6ce3b7324fed6b4d2843b8a9cfbf"
+  #  source  = "amestofortytwo/aks/azurerm"
+  #  version = "2.1.0"
+  source = "../terraform-azurerm-aks"
+  #  source = "github.com/amestofortytwo/terraform-azurerm-aks?ref=53fa0f2f4b3e6ce3b7324fed6b4d2843b8a9cfbf"
 
   name                = "demo-aks-westeu"
   resource_group_name = azurerm_resource_group.demo.name
@@ -168,7 +168,7 @@ resource "azurerm_role_assignment" "example" {
   #scope                = data.azurerm_kubernetes_cluster.demo.id
   scope                = module.kubernetes.aks_id
   role_definition_name = "Azure Kubernetes Service RBAC Cluster Admin"
-  principal_id         = "${data.azurerm_client_config.current.object_id}"
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
 resource "azurerm_federated_identity_credential" "demo" {
