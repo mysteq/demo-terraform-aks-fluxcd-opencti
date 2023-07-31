@@ -2,15 +2,15 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.56.0"
+      version = ">= 3.63.0"
     }
     null = {
       source  = "hashicorp/null"
-      version = "~> 3.2.1"
+      version = ">= 3.2.1"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.5.1"
+      version = ">= 3.5.1"
     }
   }
   backend "azurerm" {
@@ -23,6 +23,11 @@ terraform {
 }
 
 provider "azurerm" {
-  features {}
-  subscription_id = "49a743cb-1b0b-4bbd-9986-f9fcf513526f"
+  features {     
+    resource_group {
+       prevent_deletion_if_contains_resources = false
+    }
+  }
+
+  subscription_id = "e5183437-65de-4900-9987-9b9ff0fae0a3"
 }

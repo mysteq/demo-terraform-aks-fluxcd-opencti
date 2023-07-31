@@ -7,7 +7,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infra/elasticsearch
+  path: ./infra/opencti-elasticsearch
   prune: true
   wait: true
   dependsOn: 

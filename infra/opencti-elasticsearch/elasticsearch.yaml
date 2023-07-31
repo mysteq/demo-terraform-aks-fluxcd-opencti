@@ -3,7 +3,7 @@ apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: elasticsearch
-  namespace: elasticsearch
+  namespace: opencti-elasticsearch
 spec:
   version: 8.8.0
   secureSettings:

@@ -116,20 +116,20 @@ resource "azurerm_key_vault_key" "demo" {
   }
 
   provisioner "local-exec" {
-    command = "sops -e --in-place infra/elasticsearch/secret.yaml"
+    command = "sops -e --in-place infra/opencti-elasticsearch/secret.yaml"
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "sops -d --in-place infra/elasticsearch/secret.yaml"
+    command = "sops -d --in-place infra/opencti-elasticsearch/secret.yaml"
   }
 
 }
 
 module "kubernetes" {
-  #  source  = "amestofortytwo/aks/azurerm"
-  #  version = "2.1.0"
-  source = "../terraform-azurerm-aks"
+  source  = "amestofortytwo/aks/azurerm"
+  version = "3.0.0"
+  #source = "../terraform-azurerm-aks"
   #  source = "github.com/amestofortytwo/terraform-azurerm-aks?ref=53fa0f2f4b3e6ce3b7324fed6b4d2843b8a9cfbf"
 
   name                = "demo-aks-westeu"
