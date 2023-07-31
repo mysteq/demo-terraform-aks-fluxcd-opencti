@@ -1,0 +1,38 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: minio
+  namespace: opencti-minio
+spec:
+  interval: 1h0s
+  url: https://charts.min.io/
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: minio
+  namespace: opencti-minio
+spec:
+  chart:
+    spec:
+      chart: minio
+      sourceRef:
+        kind: HelmRepository
+        name: minio
+      version: '>=5.0.9'
+  interval: 1h0s
+  releaseName: minio
+  targetNamespace: opencti-minio
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    persistence:
+      enabled: false
+    replicas: 3
+    resources:
+      requests:
+        memory: 2Gi
+---
