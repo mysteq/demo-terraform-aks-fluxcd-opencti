@@ -29,6 +29,8 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    mode: standalone
+    ignoreChartChecksums: true
     persistence:
       enabled: false
     replicas: 3
