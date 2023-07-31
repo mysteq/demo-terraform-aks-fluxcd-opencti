@@ -33,7 +33,7 @@ spec:
     ignoreChartChecksums: true
     persistence:
       enabled: false
-    replicas: 3
+    replicas: 1
     resources:
       requests:
         memory: 2Gi

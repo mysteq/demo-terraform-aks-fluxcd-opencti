@@ -3,9 +3,9 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    app: minio
-  name: minio
-  namespace: opencti-minio
+    app: rabbitmq
+  name: rabbitmq
+  namespace: opencti-rabbitmq
 spec:
   containers:
   - name: minio
