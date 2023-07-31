@@ -5,3 +5,4 @@ resources:
   - elastic-system.yaml
   - opencti-elasticsearch.yaml
   - opencti-minio.yaml
+  - opencti-redis.yaml
