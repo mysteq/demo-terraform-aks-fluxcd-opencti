@@ -164,18 +164,18 @@ module "kubernetes" {
   }
 }
 
-data "azurerm_kubernetes_cluster" "demo" {
-  name                = "demo-aks-westeu"
-  resource_group_name = azurerm_resource_group.demo.name
-
-  depends_on = [
-    module.kubernetes
-  ]
-}
+//data "azurerm_kubernetes_cluster" "demo" {
+//  name                = "demo-aks-westeu"
+//  resource_group_name = azurerm_resource_group.demo.name
+//
+//  depends_on = [
+//    module.kubernetes
+//  ]
+//}
 
 resource "null_resource" "demo" {
   provisioner "local-exec" {
-    command = "az aks get-credentials --resource-group ${azurerm_resource_group.demo.name} --name ${data.azurerm_kubernetes_cluster.demo.name} --overwrite-existing --subscription ${data.azurerm_client_config.current.subscription_id}"
+    command = "az aks get-credentials --resource-group ${azurerm_resource_group.demo.name} --name demo-aks-westeu --overwrite-existing --subscription ${data.azurerm_client_config.current.subscription_id}"
   }
 }
 
@@ -189,7 +189,7 @@ resource "azurerm_role_assignment" "example" {
 resource "azurerm_federated_identity_credential" "demo" {
   name                = "demo-aks-westeu"
   resource_group_name = azurerm_resource_group.demo.name
-  issuer              = data.azurerm_kubernetes_cluster.demo.oidc_issuer_url
+  issuer              = module.kubernetes.oidc_issuer_url
   audience            = ["api://AzureADTokenExchange"]
   parent_id           = azurerm_user_assigned_identity.demo.id
   subject             = "system:serviceaccount:flux-system:kustomize-controller"
