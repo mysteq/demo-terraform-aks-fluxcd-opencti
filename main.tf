@@ -127,9 +127,9 @@ resource "azurerm_key_vault_key" "demo" {
 }
 
 module "kubernetes" {
-  source  = "amestofortytwo/aks/azurerm"
-  version = "3.0.0"
-  #source = "../terraform-azurerm-aks"
+  #source  = "amestofortytwo/aks/azurerm"
+  #version = "3.0.0"
+  source = "../../amestofortytwo/github/terraform-azurerm-aks"
   #  source = "github.com/amestofortytwo/terraform-azurerm-aks?ref=53fa0f2f4b3e6ce3b7324fed6b4d2843b8a9cfbf"
 
   name                = "demo-aks-westeu"
@@ -138,11 +138,26 @@ module "kubernetes" {
 
   workload_identity_enabled = true
 
-  default_node_pool = {
-    name       = "default"
-    node_count = 1
-    vm_size    = "Standard_B8ms"
+  key_vault_secrets_provider = {
+    enabled = true
   }
+
+  default_node_pool = {
+    name                = "default"
+    node_count          = 1
+    vm_size             = "Standard_B4ms"
+  }
+
+  additional_node_pools = [
+    {
+      name                = "pool1"
+      node_count          = 1
+      min_count           = 1
+      max_count           = 3
+      enable_auto_scaling = true
+      vm_size             = "Standard_B4ms"
+    },
+  ]
 
   tags = {
     environment = "demo"
