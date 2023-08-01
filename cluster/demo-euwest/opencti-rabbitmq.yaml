@@ -10,3 +10,5 @@ spec:
   path: ./infra/opencti-rabbitmq
   prune: true
   wait: true
+  dependsOn: 
+    - name: rabbitmq-system

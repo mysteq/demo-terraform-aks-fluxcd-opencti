@@ -7,3 +7,5 @@ resources:
   - opencti-elasticsearch.yaml
   - opencti-minio.yaml
   - opencti-redis.yaml
+  - opencti-rabbitmq.yaml
+  
