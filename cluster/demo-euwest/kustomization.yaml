@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - elastic-system.yaml
+  - rabbitmq-system.yaml
   - opencti-elasticsearch.yaml
   - opencti-minio.yaml
   - opencti-redis.yaml

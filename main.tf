@@ -26,17 +26,17 @@ resource "random_id" "id" {
 }
 
 resource "azurerm_key_vault" "demo" {
-  name                        = "demo-aks-westeu-${lower(random_id.id.hex)}"
-  location                    = azurerm_resource_group.demo.location
-  resource_group_name         = azurerm_resource_group.demo.name
-  enabled_for_disk_encryption = true
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
-  soft_delete_retention_days  = 7
-  purge_protection_enabled    = false
+  name                       = "demo-aks-westeu-${lower(random_id.id.hex)}"
+  location                   = azurerm_resource_group.demo.location
+  resource_group_name        = azurerm_resource_group.demo.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days = 7
+  purge_protection_enabled   = false
+  enable_rbac_authorization  = true
 
   sku_name = "standard"
 
-  access_policy {
+  /*access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
 
@@ -84,7 +84,19 @@ resource "azurerm_key_vault" "demo" {
     storage_permissions = [
       "Get",
     ]
-  }
+  }*/
+}
+
+resource "azurerm_role_assignment" "demo_me" {
+  scope                = azurerm_key_vault.demo.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "demo_uai" {
+  scope                = azurerm_key_vault.demo.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_user_assigned_identity.demo.principal_id
 }
 
 resource "azurerm_key_vault_key" "demo" {
@@ -143,9 +155,9 @@ module "kubernetes" {
   }
 
   default_node_pool = {
-    name                = "default"
-    node_count          = 1
-    vm_size             = "Standard_B4ms"
+    name       = "default"
+    node_count = 1
+    vm_size    = "Standard_B4ms"
   }
 
   additional_node_pools = [
@@ -195,3 +207,45 @@ resource "azurerm_federated_identity_credential" "demo" {
   subject             = "system:serviceaccount:flux-system:kustomize-controller"
 }
 
+resource "azurerm_storage_account" "opencti" {
+  name                             = "stdemoakswesteu${lower(random_id.id.hex)}"
+  resource_group_name              = azurerm_resource_group.demo.name
+  location                         = azurerm_resource_group.demo.location
+  account_tier                     = "Standard"
+  account_replication_type         = "LRS"
+  enable_https_traffic_only        = true
+  allow_nested_items_to_be_public  = false
+  min_tls_version                  = "TLS1_2"
+  cross_tenant_replication_enabled = false
+  default_to_oauth_authentication  = true
+}
+
+resource "azurerm_role_assignment" "demo_sa_me" {
+  scope                = azurerm_storage_account.opencti.id
+  role_definition_name = "Storage File Data Privileged Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_storage_share" "opencti_redis" {
+  name                 = "opencti-redis-data"
+  storage_account_name = azurerm_storage_account.opencti.name
+  quota                = 50
+}
+
+resource "azurerm_storage_share" "opencti_es" {
+  name                 = "opencti-es-data"
+  storage_account_name = azurerm_storage_account.opencti.name
+  quota                = 50
+}
+
+resource "azurerm_storage_share" "opencti_minio" {
+  name                 = "opencti-minio-data"
+  storage_account_name = azurerm_storage_account.opencti.name
+  quota                = 50
+}
+
+resource "azurerm_storage_share" "opencti_rabbitmq" {
+  name                 = "opencti-rabbitmq-data"
+  storage_account_name = azurerm_storage_account.opencti.name
+  quota                = 50
+}
