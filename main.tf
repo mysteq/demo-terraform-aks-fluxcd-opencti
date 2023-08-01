@@ -95,7 +95,7 @@ resource "azurerm_role_assignment" "demo_me" {
 
 resource "azurerm_role_assignment" "demo_uai" {
   scope                = azurerm_key_vault.demo.id
-  role_definition_name = "Key Vault Secrets User"
+  role_definition_name = "Key Vault Crypto Officer"
   principal_id         = azurerm_user_assigned_identity.demo.principal_id
 }
 
