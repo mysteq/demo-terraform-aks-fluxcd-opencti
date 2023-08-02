@@ -13,8 +13,7 @@ parameters:
   skuName: Standard_LRS
   storageAccount: stdemoakswesteu231d
   resourceGroup: demo-aks-westeu
-  shareName: ${pvc.metadata.name}
-  shareNamePrefix: opencti
+  shareName: opencti-${pvc.metadata.name}
   secretName: azure-storage-account-opencti-elasticsearch-secret
   secretNamespace: opencti-elasticsearch
 provisioner: file.csi.azure.com
