@@ -11,11 +11,11 @@ mountOptions:
   - nosharesock
 parameters:
   skuName: Standard_LRS
+  storageAccount: stdemoakswesteu231d
   resourceGroup: demo-aks-westeu
   sharename: ${pvc.metadata.name}
   secretName: azure-storage-account-opencti-elasticsearch-secret
   secretNamespace: opencti-elasticsearch
-  storageAccount: stdemoakswesteu231d
 provisioner: file.csi.azure.com
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
