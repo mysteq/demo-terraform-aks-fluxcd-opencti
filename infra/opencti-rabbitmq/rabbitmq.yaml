@@ -5,7 +5,7 @@ metadata:
   name: rabbitmq
   namespace: opencti-rabbitmq
 spec:
-  replicas: 1
+  replicas: 3
   resources:
     requests:
       cpu: 500m
@@ -20,4 +20,5 @@ spec:
       disk_free_limit.relative = 1.0
       collect_statistics_interval = 10000
   persistence:
-    storage: 0
+    storageClassName: azurefile-csi-opencti
+    storage: "5Gi"
