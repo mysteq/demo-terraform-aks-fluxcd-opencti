@@ -11,7 +11,6 @@ mountOptions:
   - nosharesock
 parameters:
   skuName: Standard_LRS
-  location: westeu
   resourceGroup: demo-aks-westeu
   shareNamePrefix: opencti-es
   secretName: azure-storage-account-opencti-elasticsearch-secret
