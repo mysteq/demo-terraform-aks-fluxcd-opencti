@@ -10,7 +10,7 @@ spec:
   - secretName: elasticsearch-config-secret
   nodeSets:
   - name: default
-    count: 3
+    count: 1
     config:
       node.store.allow_mmap: false
     podTemplate:
