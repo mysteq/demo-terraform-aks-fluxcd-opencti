@@ -2,8 +2,8 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: azurefile-csi-opencti-elasticsearch
-  namespace: opencti-elasticsearch
+  name: azurefile-csi-opencti
+  namespace: opencti-storage
 allowVolumeExpansion: true
 mountOptions:
   - mfsymlinks
@@ -14,8 +14,8 @@ parameters:
   storageAccount: stdemoakswesteu231d
   resourceGroup: demo-aks-westeu
   shareName: opencti-${pvc.metadata.name}
-  secretName: azure-storage-account-opencti-elasticsearch-secret
-  secretNamespace: opencti-elasticsearch
+  secretName: azure-storage-account-opencti-secret
+  secretNamespace: opencti-storage
 provisioner: file.csi.azure.com
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
