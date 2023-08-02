@@ -18,5 +18,5 @@ parameters:
   secretName: azure-storage-account-opencti-elasticsearch-secret
   secretNamespace: opencti-elasticsearch
 provisioner: file.csi.azure.com
-reclaimPolicy: Retain
+reclaimPolicy: Delete
 volumeBindingMode: Immediate
