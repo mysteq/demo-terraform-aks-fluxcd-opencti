@@ -234,27 +234,3 @@ resource "azurerm_role_assignment" "demo_sa_me" {
   role_definition_name = "Storage File Data Privileged Contributor"
   principal_id         = data.azurerm_client_config.current.object_id
 }
-
-resource "azurerm_storage_share" "opencti_redis" {
-  name                 = "opencti-redis-data"
-  storage_account_name = azurerm_storage_account.opencti.name
-  quota                = 50
-}
-
-resource "azurerm_storage_share" "opencti_es" {
-  name                 = "opencti-es-data"
-  storage_account_name = azurerm_storage_account.opencti.name
-  quota                = 50
-}
-
-resource "azurerm_storage_share" "opencti_minio" {
-  name                 = "opencti-minio-data"
-  storage_account_name = azurerm_storage_account.opencti.name
-  quota                = 50
-}
-
-resource "azurerm_storage_share" "opencti_rabbitmq" {
-  name                 = "opencti-rabbitmq-data"
-  storage_account_name = azurerm_storage_account.opencti.name
-  quota                = 50
-}
