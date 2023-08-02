@@ -12,3 +12,7 @@ spec:
   wait: true
   dependsOn: 
     - name: rabbitmq-operator
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-keys
