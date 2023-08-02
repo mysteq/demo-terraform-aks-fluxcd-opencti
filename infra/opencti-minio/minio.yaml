@@ -35,5 +35,5 @@ spec:
     replicas: 3
     resources:
       requests:
-        memory: 2Gi
+        memory: 1Gi
 ---
