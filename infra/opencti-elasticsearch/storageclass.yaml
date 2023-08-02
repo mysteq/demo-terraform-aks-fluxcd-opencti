@@ -15,6 +15,7 @@ parameters:
   shareNamePrefix: opencti-es
   secretName: azure-storage-account-opencti-elasticsearch-secret
   secretNamespace: opencti-elasticsearch
+  storageAccount: stdemoakswesteu231d
 provisioner: file.csi.azure.com
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
