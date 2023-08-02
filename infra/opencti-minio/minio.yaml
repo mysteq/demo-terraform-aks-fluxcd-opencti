@@ -29,11 +29,10 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
-    mode: standalone
-    ignoreChartChecksums: true
     persistence:
-      enabled: false
-    replicas: 1
+      storageClass: azurefile-csi-opencti
+      size: 5Gi
+    replicas: 3
     resources:
       requests:
         memory: 2Gi
