@@ -12,7 +12,7 @@ mountOptions:
 parameters:
   skuName: Standard_LRS
   resourceGroup: demo-aks-westeu
-  shareNamePrefix: opencti-es
+  sharename: ${pvc.metadata.name}
   secretName: azure-storage-account-opencti-elasticsearch-secret
   secretNamespace: opencti-elasticsearch
   storageAccount: stdemoakswesteu231d
