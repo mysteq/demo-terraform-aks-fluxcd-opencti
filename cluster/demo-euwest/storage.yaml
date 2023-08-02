@@ -10,3 +10,7 @@ spec:
   path: ./infra/storage
   prune: true
   wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-keys  
