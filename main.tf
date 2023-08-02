@@ -136,6 +136,15 @@ resource "azurerm_key_vault_key" "demo" {
     command = "sops -d --in-place infra/opencti-elasticsearch/secret.yaml"
   }
 
+  provisioner "local-exec" {
+    command = "sops -e --in-place infra/opencti-elasticsearch/secret-sa.yaml"
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "sops -d --in-place infra/opencti-elasticsearch/secret-sa.yaml"
+  }
+
 }
 
 module "kubernetes" {

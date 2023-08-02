@@ -1,0 +1,20 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azurefile-csi-opencti-elasticsearch
+  namespace: opencti-elasticsearch
+allowVolumeExpansion: true
+mountOptions:
+  - mfsymlinks
+  - actimeo=30
+  - nosharesock
+parameters:
+  skuName: Standard_LRS
+  resourceGroup: demo-aks-westeu
+  shareNamePrefix: opencti-es
+  secretName: azure-storage-account-opencti-elasticsearch-secret
+  secretNamespace: opencti-elasticsearch
+provisioner: file.csi.azure.com
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
