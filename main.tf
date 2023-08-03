@@ -253,3 +253,9 @@ resource "azurerm_role_assignment" "demo_sa_me" {
   role_definition_name = "Storage File Data Privileged Contributor"
   principal_id         = data.azurerm_client_config.current.object_id
 }
+
+resource "azurerm_role_assignment" "demo_sa_aks" {
+  scope                = azurerm_storage_account.opencti.id
+  role_definition_name = "Storage Account Contributor"
+  principal_id         = module.kubernetes.identity[0].principal_id
+}
