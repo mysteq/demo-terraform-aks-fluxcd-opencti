@@ -1,0 +1,24 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azurefile-csi-opencti-nfs
+  namespace: opencti-storage
+allowVolumeExpansion: true
+mountOptions:
+  - mfsymlinks
+  - actimeo=30
+  - uid=1000
+  - gid=1000
+  - nosharesock
+parameters:
+  skuName: Standard_LRS
+  storageAccount: stdemoakswesteu9ce2
+  resourceGroup: demo-aks-westeu
+  shareName: opencti-${pvc.metadata.name}
+  secretName: azure-storage-account-opencti-secret
+  secretNamespace: opencti-storage
+  protocol: nfs
+provisioner: file.csi.azure.com
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
