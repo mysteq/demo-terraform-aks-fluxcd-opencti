@@ -9,4 +9,5 @@ resources:
   - opencti-minio.yaml
   - opencti-redis.yaml
   - opencti-rabbitmq.yaml
+  - opencti.yaml
   

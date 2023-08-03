@@ -1,0 +1,17 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: opencti
+spec:
+  interval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infra/opencti
+  prune: true
+  wait: true
+  dependsOn: 
+    - name: opencti-elasticsearch
+    - name: opencti-minio
+    - name: opencti-redis
+    - name: opencti-rabbitmq
