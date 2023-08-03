@@ -204,12 +204,21 @@ resource "azurerm_role_assignment" "example" {
 }
 
 resource "azurerm_federated_identity_credential" "demo" {
-  name                = "demo-aks-westeu"
+  name                = "demo-aks-westeu-sops"
   resource_group_name = azurerm_resource_group.demo.name
   issuer              = module.kubernetes.oidc_issuer_url
   audience            = ["api://AzureADTokenExchange"]
   parent_id           = azurerm_user_assigned_identity.demo.id
   subject             = "system:serviceaccount:flux-system:kustomize-controller"
+}
+
+resource "azurerm_federated_identity_credential" "demo_identity_opencti" {
+  name                = "demo-aks-westeu-opencti"
+  resource_group_name = azurerm_resource_group.demo.name
+  issuer              = module.kubernetes.oidc_issuer_url
+  audience            = ["api://AzureADTokenExchange"]
+  parent_id           = azurerm_user_assigned_identity.demo.id
+  subject             = "system:serviceaccount:opencti:opencti-sa"
 }
 
 resource "azurerm_storage_account" "opencti" {
@@ -258,4 +267,97 @@ resource "azurerm_role_assignment" "demo_sa_aks" {
   scope                = azurerm_storage_account.opencti.id
   role_definition_name = "Storage Account Contributor"
   principal_id         = module.kubernetes.identity[0].principal_id
+}
+
+resource "random_uuid" "opencti_token" {
+}
+
+resource "azurerm_key_vault_secret" "opencti_token" {
+  name         = "opencti-token"
+  value        = random_uuid.opencti_token.result
+  key_vault_id = azurerm_key_vault.demo.id
+}
+
+resource "random_password" "erlang_cookie" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "azurerm_key_vault_secret" "erlang_cookie" {
+  name         = "erlang-cookie"
+  value        = random_password.erlang_cookie.result
+  key_vault_id = azurerm_key_vault.demo.id
+}
+
+resource "random_uuid" "minio_root_user" {
+}
+
+resource "azurerm_key_vault_secret" "minio_root_user" {
+  name         = "minio-root-user"
+  value        = random_uuid.minio_root_user.result
+  key_vault_id = azurerm_key_vault.demo.id
+}
+
+resource "random_password" "minio_root_password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "azurerm_key_vault_secret" "minio_root_password" {
+  name         = "minio-root-password"
+  value        = random_password.minio_root_password.result
+  key_vault_id = azurerm_key_vault.demo.id
+}
+
+resource "random_uuid" "rabbitmq_default_user" {
+}
+
+resource "azurerm_key_vault_secret" "rabbitmq_default_user" {
+  name         = "rabbitmq-default-user"
+  value        = random_uuid.rabbitmq_default_user.result
+  key_vault_id = azurerm_key_vault.demo.id
+}
+
+resource "random_password" "rabbitmq_default_password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "azurerm_key_vault_secret" "rabbitmq_default_password" {
+  name         = "rabbitmq-default-password"
+  value        = random_password.rabbitmq_default_password.result
+  key_vault_id = azurerm_key_vault.demo.id
+}
+
+resource "random_password" "opencti_admin_email" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "azurerm_key_vault_secret" "opencti_admin_email" {
+  name         = "opencti-admin-email"
+  value        = "${random_password.opencti_admin_email.result}@none.local"
+  key_vault_id = azurerm_key_vault.demo.id
+}
+
+resource "random_password" "opencti_admin_password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "azurerm_key_vault_secret" "opencti_admin_password" {
+  name         = "opencti-admin-password"
+  value        = random_password.opencti_admin_password.result
+  key_vault_id = azurerm_key_vault.demo.id
+}
+
+resource "random_uuid" "connector_id_alienvault" {
+}
+
+resource "random_uuid" "connector_id_opencti" {
 }

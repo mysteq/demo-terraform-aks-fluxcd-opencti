@@ -1,25 +1,108 @@
 ---
-apiVersion: elasticsearch.k8s.elastic.co/v1
-kind: Elasticsearch
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: elasticsearch
+  labels:
+    app: opencti
+  name: opencti
   namespace: opencti
 spec:
-  version: 8.8.0
-  secureSettings:
-  - secretName: elasticsearch-config-secret
-  nodeSets:
-  - name: default
-    count: 3
-    config:
-      node.store.allow_mmap: false
-    volumeClaimTemplates:
-    - metadata:
-        name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 5Gi
-        storageClassName: azurefile-csi-opencti
+  replicas: 3
+  selector:
+    matchLabels:
+      app: opencti
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: opencti
+    spec:
+      containers:
+        - env:
+            - name: NODE_OPTIONS
+              value: --max-old-space-size=8096
+            - name: APP__PORT
+              value: "8080"
+            - name: APP__BASE_URL
+              value: xx
+            - name: APP__ADMIN__EMAIL
+              value: ${OPENCTI_ADMIN_EMAIL}
+            - name: APP__ADMIN__PASSWORD
+              value: ${OPENCTI_ADMIN_PASSWORD}
+            - name: APP__ADMIN__TOKEN
+              value: ${OPENCTI_ADMIN_TOKEN}
+            - name: APP__APP_LOGS__LOGS_LEVEL
+              value: debug
+            - name: REDIS__HOSTNAME
+              value: redis
+            - name: REDIS__PORT
+              value: "6379"
+            - name: ELASTICSEARCH__URL
+              value: http://elasticsearch:9200
+            - name: MINIO__ENDPOINT
+              value: minio
+            - name: MINIO__PORT
+              value: "9000"
+            - name: MINIO__USE_SSL
+              value: "false"
+            - name: MINIO__ACCESS_KEY
+              value: ${MINIO_ROOT_USER}
+            - name: MINIO__SECRET_KEY
+              value: ${MINIO_ROOT_PASSWORD}
+            - name: RABBITMQ__HOSTNAME
+              value: rabbitmq
+            - name: RABBITMQ__PORT
+              value: "5672"
+            - name: RABBITMQ__PORT_MANAGEMENT
+              value: "15672"
+            - name: RABBITMQ__MANAGEMENT_SSL
+              value: "false"
+            - name: RABBITMQ__USERNAME
+              value: ${RABBITMQ_DEFAULT_USER}
+            - name: RABBITMQ__PASSWORD
+              value: ${RABBITMQ_DEFAULT_PASS}
+            - name: SMTP__HOSTNAME
+              value: ${SMTP_HOSTNAME}
+            - name: SMTP__PORT
+              value: "25"
+            - name: PROVIDERS__OPENID__STRATEGY
+              value: OpenIDConnectStrategy
+            - name: PROVIDERS__OPENID__CONFIG__LABEL
+              value: Login with OpenID
+            - name: PROVIDERS__OPENID__CONFIG__ISSUER
+              value: xx
+            - name: PROVIDERS__OPENID__CONFIG__CLIENT_ID
+              value: f34bad5b-1c67-4232-ba62-fe0805f460a5
+            - name: PROVIDERS__OPENID__CONFIG__CLIENT_SECRET
+              value: xx
+            - name: PROVIDERS__OPENID__CONFIG__REDIRECT_URIS
+              value: xx
+          image: opencti/platform:5.9.6
+          name: opencti
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: 2048Mi
+              cpu: "1500m"
+            requests:
+              memory: 256Mi
+              cpu: 1
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opencti
+  namespace: opencti
+  labels:
+    app: opencti
+spec:
+  ports:
+    - name: "opencti"
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: opencti
+status:
+  loadBalancer: {}
