@@ -99,6 +99,12 @@ resource "azurerm_role_assignment" "demo_uai" {
   principal_id         = azurerm_user_assigned_identity.demo.principal_id
 }
 
+resource "azurerm_role_assignment" "demo_uai2" {
+  scope                = azurerm_key_vault.demo.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = azurerm_user_assigned_identity.demo.principal_id
+}
+
 resource "azurerm_key_vault_key" "demo" {
   name         = "sops-key"
   key_vault_id = azurerm_key_vault.demo.id
