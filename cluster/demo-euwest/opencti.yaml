@@ -11,7 +11,7 @@ spec:
   prune: true
   wait: true
   dependsOn: 
-    - name: opencti-elasticsearch
-    - name: opencti-minio
-    - name: opencti-redis
-    - name: opencti-rabbitmq
+    - name: elasticsearch
+    - name: minio
+    - name: redis
+    - name: rabbitmq
