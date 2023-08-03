@@ -13,6 +13,7 @@ apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
   name: azure-kvname-workload-identity # needs to be unique per namespace
+  namespace: opencti
 spec:
   provider: azure
   secretObjects:                              # [OPTIONAL] SecretObjects defines the desired state of synced Kubernetes secret objects
