@@ -8,6 +8,8 @@ allowVolumeExpansion: true
 mountOptions:
   - mfsymlinks
   - actimeo=30
+  - uid=1000
+  - gid=1000
   - nosharesock
 parameters:
   skuName: Standard_LRS
