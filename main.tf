@@ -233,6 +233,10 @@ resource "azurerm_storage_account" "opencti" {
   }
 
   provisioner "local-exec" {
+    command = "sed -i '' -r 's/storageAccount: (.*)/storageAccount: ${azurerm_storage_account.opencti.name}/g' infra/storage/storageclass.yaml"
+  }
+
+  provisioner "local-exec" {
     command = "sops -e --in-place infra/storage/secret-sa.yaml"
   }
 
