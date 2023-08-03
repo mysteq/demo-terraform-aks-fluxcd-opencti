@@ -30,7 +30,7 @@ spec:
     crds: CreateReplace
   values:
     persistence:
-      storageClass: azurefile-csi-opencti-nfs
+      storageClass: azurefile-csi-opencti
       size: 5Gi
     replicas: 3
     resources:
