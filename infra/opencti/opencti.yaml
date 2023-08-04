@@ -217,11 +217,11 @@ spec:
               memory: 256Mi
               cpu: 1
           volumeMounts:
-          - name: secrets-store
+          - name: secrets-store01-inline
             mountPath: "/mnt/secrets-store"
             readOnly: true
       volumes:
-        - name: secrets-store
+        - name: secrets-store01-inline
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
