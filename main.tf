@@ -351,9 +351,9 @@ resource "azurerm_key_vault_secret" "rabbitmq_default_password" {
 }
 
 resource "random_password" "opencti_admin_email" {
-  length           = 16
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  length  = 16
+  special = false
+  upper   = false
 }
 
 resource "azurerm_key_vault_secret" "opencti_admin_email" {
