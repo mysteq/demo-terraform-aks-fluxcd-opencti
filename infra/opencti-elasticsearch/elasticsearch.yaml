@@ -12,6 +12,8 @@ spec:
   - name: default
     count: 3
     config:
+      xpack.ml.enabled: false
+      xpack.security.enabled: false
       node.store.allow_mmap: false
     volumeClaimTemplates:
     - metadata:
