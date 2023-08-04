@@ -1,9 +1,100 @@
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opencti-sa
+  namespace: opencti
+  annotations:
+    azure.workload.identity/client-id: 0e06ffdf-25d7-46e4-8522-c96db87fa196
+  labels:
+    azure.workload.identity/use: "true"
+---
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: azure-kvname-workload-identity # needs to be unique per namespace
+  namespace: opencti
+spec:
+  provider: azure
+  secretObjects:                              # [OPTIONAL] SecretObjects defines the desired state of synced Kubernetes secret objects
+  - data:
+    - key: opencti-base-url                         # data field to populate
+      objectName: opencti-base-url                        # name of the mounted content to sync; this could be the object name or the object alias
+    - key: opencti-config-issuer                           # data field to populate
+      objectName: opencti-config-issuer                        # name of the mounted content to sync; this could be the object name or the object alias
+    - key: opencti-config-clientid                           # data field to populate
+      objectName: opencti-config-clientid                        # name of the mounted content to sync; this could be the object name or the object alias
+    - key: opencti-config-secret                           # data field to populate
+      objectName: opencti-config-secret                        # name of the mounted content to sync; this could be the object name or the object alias
+    - key: opencti-config-redirect-uris                           # data field to populate
+      objectName: opencti-config-redirect-uris                        # name of the mounted content to sync; this could be the object name or the object alias
+    - key: opencti-admin-email                           # data field to populate
+      objectName: opencti-admin-email                        # name of the mounted content to sync; this could be the object name or the object alias
+    - key: opencti-admin-password                           # data field to populate
+      objectName: opencti-admin-password                        # name of the mounted content to sync; this could be the object name or the object alias
+    - key: opencti-token                           # data field to populate
+      objectName: opencti-token                       # name of the mounted content to sync; this could be the object name or the object alias
+    - key: rabbitmq-default-user                          # data field to populate
+      objectName: rabbitmq-default-user                       # name of the mounted content to sync; this could be the object name or the object alias
+    - key: rabbitmq-default-password                          # data field to populate
+      objectName: rabbitmq-default-password                      # name of the mounted content to sync; this could be the object name or the object alias
+    - key: minio-root-user                           # data field to populate
+      objectName: minio-root-user                        # name of the mounted content to sync; this could be the object name or the object alias
+    - key: minio-root-password                          # data field to populate
+      objectName: minio-root-password                       # name of the mounted content to sync; this could be the object name or the object alias
+    secretName: opencti-secret                     # name of the Kubernetes secret object
+    type: Opaque                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "false"          
+    clientID: "0e06ffdf-25d7-46e4-8522-c96db87fa196" # Setting this to use workload identity
+    keyvaultName: demo-aks-westeu-2719       # Set to the name of your key vault
+    tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
+    objects:  |
+      array:
+        - |
+          objectName: opencti-base-url
+          objectType: secret
+        - |
+          objectName: opencti-config-issuer
+          objectType: secret
+        - |
+          objectName: opencti-config-clientid
+          objectType: secret
+        - |
+          objectName: opencti-config-secret
+          objectType: secret
+        - |
+          objectName: opencti-config-redirect-uris
+          objectType: secret
+        - |
+          objectName: opencti-admin-email
+          objectType: secret
+        - |
+          objectName: opencti-admin-password
+          objectType: secret 
+        - |
+          objectName: opencti-token
+          objectType: secret 
+        - |
+          objectName: rabbitmq-default-user
+          objectType: secret 
+        - |
+          objectName: rabbitmq-default-password
+          objectType: secret 
+        - |
+          objectName: minio-root-user
+          objectType: secret 
+        - |
+          objectName: minio-root-password
+          objectType: secret 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: opencti
+    azure.workload.identity/use: true
   name: opencti
   namespace: opencti
 spec:
@@ -17,66 +108,103 @@ spec:
       labels:
         app: opencti
     spec:
+      serviceAccountName: opencti-sa
       containers:
         - env:
-            - name: NODE_OPTIONS
-              value: --max-old-space-size=8096
-            - name: APP__PORT
-              value: "8080"
-            - name: APP__BASE_URL
-              value: xx
-            - name: APP__ADMIN__EMAIL
-              value: ${OPENCTI_ADMIN_EMAIL}
-            - name: APP__ADMIN__PASSWORD
-              value: ${OPENCTI_ADMIN_PASSWORD}
-            - name: APP__ADMIN__TOKEN
-              value: ${OPENCTI_ADMIN_TOKEN}
-            - name: APP__APP_LOGS__LOGS_LEVEL
-              value: debug
-            - name: REDIS__HOSTNAME
-              value: redis
-            - name: REDIS__PORT
-              value: "6379"
-            - name: ELASTICSEARCH__URL
-              value: http://elasticsearch:9200
-            - name: MINIO__ENDPOINT
-              value: minio
-            - name: MINIO__PORT
-              value: "9000"
-            - name: MINIO__USE_SSL
-              value: "false"
-            - name: MINIO__ACCESS_KEY
-              value: ${MINIO_ROOT_USER}
-            - name: MINIO__SECRET_KEY
-              value: ${MINIO_ROOT_PASSWORD}
-            - name: RABBITMQ__HOSTNAME
-              value: rabbitmq
-            - name: RABBITMQ__PORT
-              value: "5672"
-            - name: RABBITMQ__PORT_MANAGEMENT
-              value: "15672"
-            - name: RABBITMQ__MANAGEMENT_SSL
-              value: "false"
-            - name: RABBITMQ__USERNAME
-              value: ${RABBITMQ_DEFAULT_USER}
-            - name: RABBITMQ__PASSWORD
-              value: ${RABBITMQ_DEFAULT_PASS}
-            - name: SMTP__HOSTNAME
-              value: ${SMTP_HOSTNAME}
-            - name: SMTP__PORT
-              value: "25"
-            - name: PROVIDERS__OPENID__STRATEGY
-              value: OpenIDConnectStrategy
-            - name: PROVIDERS__OPENID__CONFIG__LABEL
-              value: Login with OpenID
-            - name: PROVIDERS__OPENID__CONFIG__ISSUER
-              value: xx
-            - name: PROVIDERS__OPENID__CONFIG__CLIENT_ID
-              value: f34bad5b-1c67-4232-ba62-fe0805f460a5
-            - name: PROVIDERS__OPENID__CONFIG__CLIENT_SECRET
-              value: xx
-            - name: PROVIDERS__OPENID__CONFIG__REDIRECT_URIS
-              value: xx
+          - name: NODE_OPTIONS
+            value: --max-old-space-size=8096
+          - name: APP__PORT
+            value: "8080"
+          - name: APP__BASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: opencti-base-url
+          - name: APP__ADMIN__EMAIL
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: opencti-admin-email
+          - name: APP__ADMIN__PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: opencti-admin-password
+          - name: APP__ADMIN__TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: opencti-token
+          - name: APP__APP_LOGS__LOGS_LEVEL
+            value: debug
+          - name: REDIS__HOSTNAME
+            value: redis
+          - name: REDIS__PORT
+            value: "6379"
+          - name: ELASTICSEARCH__URL
+            value: http://elasticsearch:9200
+          - name: MINIO__ENDPOINT
+            value: minio
+          - name: MINIO__PORT
+            value: "9000"
+          - name: MINIO__USE_SSL
+            value: "false"
+          - name: MINIO__ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: minio-root-user
+          - name: MINIO__SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: minio-root-password
+          - name: RABBITMQ__HOSTNAME
+            value: rabbitmq
+          - name: RABBITMQ__PORT
+            value: "5672"
+          - name: RABBITMQ__PORT_MANAGEMENT
+            value: "15672"
+          - name: RABBITMQ__MANAGEMENT_SSL
+            value: "false"
+          - name: RABBITMQ__USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: rabbitmq-default-user
+          - name: RABBITMQ__PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: rabbitmq-default-password
+          - name: SMTP__HOSTNAME
+            value: "localhost"
+          - name: SMTP__PORT
+            value: "25"
+          - name: PROVIDERS__OPENID__STRATEGY
+            value: OpenIDConnectStrategy
+          - name: PROVIDERS__OPENID__CONFIG__LABEL
+            value: Login with OpenID
+          - name: PROVIDERS__OPENID__CONFIG__ISSUER
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: opencti-config-issuer
+          - name: PROVIDERS__OPENID__CONFIG__CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: opencti-config-clientid
+          - name: PROVIDERS__OPENID__CONFIG__CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: opencti-config-secret
+          - name: PROVIDERS__OPENID__CONFIG__REDIRECT_URIS
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: opencti-config-redirect-uris
           image: opencti/platform:5.9.6
           name: opencti
           ports:
@@ -88,6 +216,17 @@ spec:
             requests:
               memory: 256Mi
               cpu: 1
+          volumeMounts:
+          - name: secrets-store
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-kvname-workload-identity"
       restartPolicy: Always
 ---
 apiVersion: v1
