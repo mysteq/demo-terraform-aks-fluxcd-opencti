@@ -138,13 +138,13 @@ spec:
           - name: APP__APP_LOGS__LOGS_LEVEL
             value: debug
           - name: REDIS__HOSTNAME
-            value: redis
+            value: redis.opencti-redis
           - name: REDIS__PORT
             value: "6379"
           - name: ELASTICSEARCH__URL
-            value: http://elasticsearch-es-http:9200
+            value: http://elasticsearch-es-http.opencti-elasticsearch:9200
           - name: MINIO__ENDPOINT
-            value: minio
+            value: minio.opencti-minio
           - name: MINIO__PORT
             value: "9000"
           - name: MINIO__USE_SSL
@@ -160,7 +160,7 @@ spec:
                 name: opencti-secret
                 key: minio-root-password
           - name: RABBITMQ__HOSTNAME
-            value: rabbitmq
+            value: rabbitmq.opencti-rabbitmq
           - name: RABBITMQ__PORT
             value: "5672"
           - name: RABBITMQ__PORT_MANAGEMENT
