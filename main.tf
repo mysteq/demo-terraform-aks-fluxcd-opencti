@@ -142,7 +142,7 @@ resource "azurerm_key_vault_key" "demo" {
     command = "sops -d --in-place infra/opencti-elasticsearch/secret.yaml"
   }
 
-  depends_on = [ azurerm_role_assignment.demo_me ]
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 module "kubernetes" {
@@ -260,7 +260,7 @@ resource "azurerm_storage_account" "opencti" {
     command = "sops -d --in-place infra/storage/secret-sa.yaml"
   }
 
-  depends_on = [ azurerm_key_vault_key.demo ]
+  depends_on = [azurerm_key_vault_key.demo]
 }
 
 resource "azurerm_role_assignment" "demo_sa_me" {
@@ -282,6 +282,8 @@ resource "azurerm_key_vault_secret" "opencti_token" {
   name         = "opencti-token"
   value        = random_uuid.opencti_token.result
   key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "random_password" "erlang_cookie" {
@@ -294,6 +296,8 @@ resource "azurerm_key_vault_secret" "erlang_cookie" {
   name         = "erlang-cookie"
   value        = random_password.erlang_cookie.result
   key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "random_uuid" "minio_root_user" {
@@ -303,6 +307,8 @@ resource "azurerm_key_vault_secret" "minio_root_user" {
   name         = "minio-root-user"
   value        = random_uuid.minio_root_user.result
   key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "random_password" "minio_root_password" {
@@ -315,6 +321,8 @@ resource "azurerm_key_vault_secret" "minio_root_password" {
   name         = "minio-root-password"
   value        = random_password.minio_root_password.result
   key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "random_uuid" "rabbitmq_default_user" {
@@ -324,6 +332,8 @@ resource "azurerm_key_vault_secret" "rabbitmq_default_user" {
   name         = "rabbitmq-default-user"
   value        = random_uuid.rabbitmq_default_user.result
   key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "random_password" "rabbitmq_default_password" {
@@ -336,6 +346,8 @@ resource "azurerm_key_vault_secret" "rabbitmq_default_password" {
   name         = "rabbitmq-default-password"
   value        = random_password.rabbitmq_default_password.result
   key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "random_password" "opencti_admin_email" {
@@ -348,6 +360,8 @@ resource "azurerm_key_vault_secret" "opencti_admin_email" {
   name         = "opencti-admin-email"
   value        = "${random_password.opencti_admin_email.result}@none.local"
   key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "random_password" "opencti_admin_password" {
@@ -360,6 +374,8 @@ resource "azurerm_key_vault_secret" "opencti_admin_password" {
   name         = "opencti-admin-password"
   value        = random_password.opencti_admin_password.result
   key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "random_uuid" "connector_id_alienvault" {
