@@ -62,9 +62,6 @@ spec:
   persistence:
     storageClassName: azurefile-csi-opencti
     storage: "5Gi"
-  secretBackend:
-    externalSecret: 
-      name: "rabbitmq-config-secret"
   override:
     statefulSet:
       spec:
@@ -73,6 +70,17 @@ spec:
             serviceAccountName: opencti-rabbitmq-sa
             containers:
               - name: rabbitmq
+                env:
+                  - name: RABBITMQ_DEFAULT_USER
+                    valueFrom:
+                      secretKeyRef:
+                        name: rabbitmq-config-secret
+                        key: rabbitmq-default-user
+                  - name: RABBITMQ_DEFAULT_PASS
+                    valueFrom:
+                      secretKeyRef:
+                        name: rabbitmq-config-secret
+                        key: rabbitmq-default-password
                 volumeMounts:
                   - name: secrets-store01-inline
                     mountPath: "/mnt/secrets-store"
