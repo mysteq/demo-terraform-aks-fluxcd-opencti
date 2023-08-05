@@ -1,4 +1,44 @@
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opencti-rabbitmq-sa
+  namespace: opencti-rabbitmq
+  annotations:
+    azure.workload.identity/client-id: bb0a6bf4-de13-47a2-abea-e5d29e8ea3b7
+  labels:
+    azure.workload.identity/use: "true"
+---
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: opencti-rabbitmq-secretprovider # needs to be unique per namespace
+  namespace: opencti-rabbitmq
+spec:
+  provider: azure
+  secretObjects:                              # [OPTIONAL] SecretObjects defines the desired state of synced Kubernetes secret objects
+  - data:
+    - key: username                        # data field to populate
+      objectName: rabbitmq-default-user                       # name of the mounted content to sync; this could be the object name or the object alias
+    - key: password                          # data field to populate
+      objectName: rabbitmq-default-password                       # name of the mounted content to sync; this could be the object name or the object alias
+    secretName: rabbitmq-config-secret                    # name of the Kubernetes secret object
+    type: Opaque                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "false"          
+    clientID: "bb0a6bf4-de13-47a2-abea-e5d29e8ea3b7"
+    keyvaultName: demo-aks-westeu-87c2
+    tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
+    objects:  |
+      array:
+        - |
+          objectName: rabbitmq-default-user
+          objectType: secret
+        - |
+          objectName: rabbitmq-default-password
+          objectType: secret
+---
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
@@ -22,3 +62,25 @@ spec:
   persistence:
     storageClassName: azurefile-csi-opencti
     storage: "5Gi"
+  secretBackend:
+    externalSecret: 
+      name: "rabbitmq-config-secret"
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            serviceAccountName: opencti-rabbitmq-sa
+            containers:
+              - name: rabbitmq
+                volumeMounts:
+                  - name: secrets-store01-inline
+                    mountPath: "/mnt/secrets-store"
+                    readOnly: true
+            volumes:
+              - name: secrets-store01-inline
+                csi:
+                  driver: secrets-store.csi.k8s.io
+                  readOnly: true
+                  volumeAttributes:
+                    secretProviderClass: "opencti-rabbitmq-secretprovider"
