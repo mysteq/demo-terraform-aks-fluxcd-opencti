@@ -57,7 +57,7 @@ spec:
     podTemplate:
       metadata:
         labels:
-          azure.workload.identity/use: true
+          azure.workload.identity/use: "true"
       spec:
         containers:
           - name: elasticsearch
