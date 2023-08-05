@@ -3,15 +3,3 @@ kind: Kustomization
 resources:
 - namespace.yaml
 - minio.yaml
-
-patches:
-  - patch: |-
-      apiVersion: v1
-      kind: ServiceAccount
-      metadata:
-        name: opencti-minio-sa
-        namespace: opencti-minio
-        annotations:
-          azure.workload.identity/client-id: bb0a6bf4-de13-47a2-abea-e5d29e8ea3b7
-        labels:
-          azure.workload.identity/use: "true"
