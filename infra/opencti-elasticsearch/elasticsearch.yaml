@@ -61,6 +61,7 @@ spec:
         labels:
           azure.workload.identity/use: "true"
       spec:
+        serviceAccountName: opencti-elasticsearch-sa
         containers:
           - name: elasticsearch
             volumeMounts:
