@@ -227,12 +227,30 @@ resource "azurerm_federated_identity_credential" "demo_identity_opencti" {
 }
 
 resource "azurerm_federated_identity_credential" "demo_identity_opencti-elasticsearch" {
-  name                = "demo-aks-westeu-openctileasticsearch"
+  name                = "demo-aks-westeu-opencti-elasticsearch"
   resource_group_name = azurerm_resource_group.demo.name
   issuer              = module.kubernetes.oidc_issuer_url
   audience            = ["api://AzureADTokenExchange"]
   parent_id           = azurerm_user_assigned_identity.demo.id
   subject             = "system:serviceaccount:opencti-elasticsearch:opencti-elasticsearch-sa"
+}
+
+resource "azurerm_federated_identity_credential" "demo_identity_opencti-rabbitmq" {
+  name                = "demo-aks-westeu-opencti-rabbitmq"
+  resource_group_name = azurerm_resource_group.demo.name
+  issuer              = module.kubernetes.oidc_issuer_url
+  audience            = ["api://AzureADTokenExchange"]
+  parent_id           = azurerm_user_assigned_identity.demo.id
+  subject             = "system:serviceaccount:opencti-rabbitmq:opencti-rabbitmq-sa"
+}
+
+resource "azurerm_federated_identity_credential" "demo_identity_opencti-minio" {
+  name                = "demo-aks-westeu-opencti-minio"
+  resource_group_name = azurerm_resource_group.demo.name
+  issuer              = module.kubernetes.oidc_issuer_url
+  audience            = ["api://AzureADTokenExchange"]
+  parent_id           = azurerm_user_assigned_identity.demo.id
+  subject             = "system:serviceaccount:opencti-minio:opencti-minio-sa"
 }
 
 resource "azurerm_storage_account" "opencti" {
