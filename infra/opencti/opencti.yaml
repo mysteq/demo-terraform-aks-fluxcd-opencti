@@ -143,6 +143,8 @@ spec:
             value: "6379"
           - name: ELASTICSEARCH__URL
             value: https://elasticsearch-es-http.opencti-elasticsearch:9200
+          - name: ELASTICSEARCH__SSL__REJECT_UNAUTHORIZED
+            value: "false"
           - name: MINIO__ENDPOINT
             value: minio.opencti-minio
           - name: MINIO__PORT
