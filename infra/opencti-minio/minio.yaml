@@ -77,6 +77,8 @@ spec:
       requests:
         memory: 1Gi
     existingSecret: minio-root-secret
+    serviceAccount:
+      name: opencti-minio-sa
     podLabels:
       azure.workload.identity/use: "true"
     extraVolumeMounts:
