@@ -23,7 +23,7 @@ spec:
     - key: password                          # data field to populate
       objectName: elasticsearch-password                       # name of the mounted content to sync; this could be the object name or the object alias
     - key: roles
-      value: "superuser"
+      objectName: elasticsearch-roles
     secretName: elasticsearch-auth-secret                    # name of the Kubernetes secret object
     type: kubernetes.io/basic-auth                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
   parameters:
@@ -39,6 +39,9 @@ spec:
           objectType: secret
         - |
           objectName: elasticsearch-password
+          objectType: secret
+        - |
+          objectName: elasticsearch-roles
           objectType: secret
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1

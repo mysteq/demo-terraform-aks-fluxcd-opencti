@@ -408,6 +408,14 @@ resource "azurerm_key_vault_secret" "elasticsearch-password" {
   depends_on = [azurerm_role_assignment.demo_me]
 }
 
+resource "azurerm_key_vault_secret" "elasticsearch-roles" {
+  name         = "elasticsearch-roles"
+  value        = "superuser"
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
+}
+
 resource "random_uuid" "connector_id_alienvault" {
 }
 
