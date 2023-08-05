@@ -75,12 +75,12 @@ spec:
                     valueFrom:
                       secretKeyRef:
                         name: rabbitmq-config-secret
-                        key: rabbitmq-default-user
+                        key: username
                   - name: RABBITMQ_DEFAULT_PASS
                     valueFrom:
                       secretKeyRef:
                         name: rabbitmq-config-secret
-                        key: rabbitmq-default-password
+                        key: password
                 volumeMounts:
                   - name: secrets-store01-inline
                     mountPath: "/mnt/secrets-store"
