@@ -5,7 +5,7 @@ metadata:
   name: opencti-sa
   namespace: opencti
   annotations:
-    azure.workload.identity/client-id: 0e06ffdf-25d7-46e4-8522-c96db87fa196
+    azure.workload.identity/client-id: bb0a6bf4-de13-47a2-abea-e5d29e8ea3b7
   labels:
     azure.workload.identity/use: "true"
 ---
@@ -47,8 +47,8 @@ spec:
   parameters:
     usePodIdentity: "false"
     useVMManagedIdentity: "false"          
-    clientID: "0e06ffdf-25d7-46e4-8522-c96db87fa196" # Setting this to use workload identity
-    keyvaultName: demo-aks-westeu-2719       # Set to the name of your key vault
+    clientID: "bb0a6bf4-de13-47a2-abea-e5d29e8ea3b7" # Setting this to use workload identity
+    keyvaultName: demo-aks-westeu-87c2       # Set to the name of your key vault
     tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
     objects:  |
       array:

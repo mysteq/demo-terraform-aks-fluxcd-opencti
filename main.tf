@@ -378,6 +378,28 @@ resource "azurerm_key_vault_secret" "opencti_admin_password" {
   depends_on = [azurerm_role_assignment.demo_me]
 }
 
+resource "azurerm_key_vault_secret" "elasticsearch-user" {
+  name         = "elasticsearch-user"
+  value        = "elastic"
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
+}
+
+resource "random_password" "elasticsearch-password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "azurerm_key_vault_secret" "elasticsearch-password" {
+  name         = "elasticsearch-password"
+  value        = random_password.elasticsearch-password.result
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
+}
+
 resource "random_uuid" "connector_id_alienvault" {
 }
 
