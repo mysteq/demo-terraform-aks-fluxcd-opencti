@@ -44,6 +44,8 @@ kind: Elasticsearch
 metadata:
   name: elasticsearch
   namespace: opencti-elasticsearch
+  labels:
+    azure.workload.identity/use: true
 spec:
   version: 8.8.0
   auth:
