@@ -42,6 +42,10 @@ spec:
       objectName: minio-root-user                        # name of the mounted content to sync; this could be the object name or the object alias
     - key: minio-root-password                          # data field to populate
       objectName: minio-root-password                       # name of the mounted content to sync; this could be the object name or the object alias
+    - key: elasticsearch-user
+      objectName: elasticsearch-user
+    - key: elasticsearch-password
+      objectName: elasticsearch-password
     secretName: opencti-secret                     # name of the Kubernetes secret object
     type: Opaque                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
   parameters:
@@ -87,6 +91,12 @@ spec:
           objectType: secret 
         - |
           objectName: minio-root-password
+          objectType: secret 
+        - |
+          objectName: elasticsearch-user
+          objectType: secret 
+        - |
+          objectName: elasticsearch-password
           objectType: secret 
 ---
 apiVersion: apps/v1
@@ -148,12 +158,12 @@ spec:
           - name: ELASTICSEARCH__USERNAME
             valueFrom:
               secretKeyRef:
-                name: elasticsearch-auth-secret
+                name: opencti-secret
                 key: elasticsearch-user
           - name: ELASTICSEARCH__PASSWORD
             valueFrom:
               secretKeyRef:
-                name: elasticsearch-auth-secret
+                name: opencti-secret
                 key: elasticsearch-password
           - name: MINIO__ENDPOINT
             value: minio.opencti-minio
