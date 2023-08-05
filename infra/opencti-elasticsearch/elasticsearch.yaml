@@ -22,7 +22,7 @@ spec:
       objectName: elasticsearch-user                       # name of the mounted content to sync; this could be the object name or the object alias
     - key: password                          # data field to populate
       objectName: elasticsearch-password                       # name of the mounted content to sync; this could be the object name or the object alias
-    - key: role
+    - key: roles
       value: "superuser"
     secretName: elasticsearch-auth-secret                    # name of the Kubernetes secret object
     type: kubernetes.io/basic-auth                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
