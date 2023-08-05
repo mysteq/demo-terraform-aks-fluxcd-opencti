@@ -9,6 +9,23 @@ metadata:
   labels:
     azure.workload.identity/use: "true"
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: rabbitmq
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/part-of: rabbitmq
+  name: opencti-rabbitmq-sa
+  namespace: opencti-rabbitmq
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rabbitmq-peer-discovery
+subjects:
+- kind: ServiceAccount
+  name: opencti-rabbitmq-sa
+---
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
