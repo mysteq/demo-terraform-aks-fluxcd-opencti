@@ -7,7 +7,7 @@ metadata:
   annotations:
     azure.workload.identity/client-id: bb0a6bf4-de13-47a2-abea-e5d29e8ea3b7
   labels:
-    azure.workload.identity/use: true
+    azure.workload.identity/use: "true"
 ---
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
@@ -22,6 +22,8 @@ spec:
       objectName: elasticsearch-user                       # name of the mounted content to sync; this could be the object name or the object alias
     - key: password                          # data field to populate
       objectName: elasticsearch-password                       # name of the mounted content to sync; this could be the object name or the object alias
+    - key: role
+      value: "superuser"
     secretName: elasticsearch-auth-secret                    # name of the Kubernetes secret object
     type: kubernetes.io/basic-auth                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
   parameters:

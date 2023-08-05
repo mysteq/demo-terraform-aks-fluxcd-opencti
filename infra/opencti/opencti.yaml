@@ -94,7 +94,7 @@ kind: Deployment
 metadata:
   labels:
     app: opencti
-    azure.workload.identity/use: true
+    azure.workload.identity/use: "true"
   name: opencti
   namespace: opencti
 spec:

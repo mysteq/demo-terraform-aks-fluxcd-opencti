@@ -170,7 +170,6 @@ module "kubernetes" {
   additional_node_pools = [
     {
       name                = "pool1"
-      node_count          = 1
       min_count           = 1
       max_count           = 3
       enable_auto_scaling = true
@@ -225,6 +224,15 @@ resource "azurerm_federated_identity_credential" "demo_identity_opencti" {
   audience            = ["api://AzureADTokenExchange"]
   parent_id           = azurerm_user_assigned_identity.demo.id
   subject             = "system:serviceaccount:opencti:opencti-sa"
+}
+
+resource "azurerm_federated_identity_credential" "demo_identity_opencti-elasticsearch" {
+  name                = "demo-aks-westeu-openctileasticsearch"
+  resource_group_name = azurerm_resource_group.demo.name
+  issuer              = module.kubernetes.oidc_issuer_url
+  audience            = ["api://AzureADTokenExchange"]
+  parent_id           = azurerm_user_assigned_identity.demo.id
+  subject             = "system:serviceaccount:opencti-elasticsearch:opencti-elasticsearch-sa"
 }
 
 resource "azurerm_storage_account" "opencti" {
