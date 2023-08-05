@@ -12,8 +12,8 @@ metadata:
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
-  name: opencti-elasticsearch-secretprovider # needs to be unique per namespace
-  namespace: opencti-elasticsearch
+  name: opencti-minio-secretprovider # needs to be unique per namespace
+  namespace: opencti-minio
 spec:
   provider: azure
   secretObjects:                              # [OPTIONAL] SecretObjects defines the desired state of synced Kubernetes secret objects
@@ -89,5 +89,5 @@ spec:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "opencti-elasticsearch-secretprovider"
+            secretProviderClass: "opencti-minio-secretprovider"
 ---
