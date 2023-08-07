@@ -18,6 +18,10 @@ resource "azurerm_user_assigned_identity" "demo" {
   provisioner "local-exec" {
     command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/clientId: (.*)/clientId: ${azurerm_user_assigned_identity.demo.client_id}/g' {} +"
   }
+  
+  provisioner "local-exec" {
+    command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/clientID: (.*)/clientID: ${azurerm_user_assigned_identity.demo.client_id}/g' {} +"
+  }
 
 }
 
