@@ -15,3 +15,7 @@ patches:
           azure.workload.identity/client-id: 3089df27-eed6-443f-80e0-f30164e425f5
         labels:
           azure.workload.identity/use: "true"
+    target:
+      kind: ServiceAccount
+      name: opencti-minio-sa
+      namespace: opencti-minio
