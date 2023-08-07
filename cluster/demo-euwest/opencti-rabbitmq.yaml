@@ -7,7 +7,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infra/opencti-rabbitmq
+  path: ./cluster/app/opencti-rabbitmq
   prune: true
   wait: true
   dependsOn: 

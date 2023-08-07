@@ -7,7 +7,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infra/storage
+  path: ./cluster/infra/storage
   prune: true
   wait: true
   decryption:

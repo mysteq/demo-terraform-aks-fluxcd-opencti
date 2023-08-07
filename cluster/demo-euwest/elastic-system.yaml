@@ -7,6 +7,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infra/elastic-system
+  path: ./cluster/infra/elastic-system
   prune: true
   wait: true

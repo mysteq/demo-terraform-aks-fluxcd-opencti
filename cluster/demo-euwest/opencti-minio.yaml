@@ -7,6 +7,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infra/opencti-minio
+  path: ./cluster/app/opencti-minio
   prune: true
   wait: true

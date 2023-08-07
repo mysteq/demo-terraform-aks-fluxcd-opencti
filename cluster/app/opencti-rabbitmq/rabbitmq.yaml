@@ -5,7 +5,7 @@ metadata:
   name: opencti-rabbitmq-sa
   namespace: opencti-rabbitmq
   annotations:
-    azure.workload.identity/client-id: bb0a6bf4-de13-47a2-abea-e5d29e8ea3b7
+    azure.workload.identity/client-id: 9894f20e-30d8-40a8-b98e-ad4a9fa714c8
   labels:
     azure.workload.identity/use: "true"
 ---
@@ -45,7 +45,7 @@ spec:
     usePodIdentity: "false"
     useVMManagedIdentity: "false"          
     clientID: "bb0a6bf4-de13-47a2-abea-e5d29e8ea3b7"
-    keyvaultName: demo-aks-westeu-87c2
+    keyvaultName: demo-aks-westeu-a2d8
     tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
     objects:  |
       array:

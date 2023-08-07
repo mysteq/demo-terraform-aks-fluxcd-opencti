@@ -7,6 +7,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infra/opencti-redis
+  path: ./cluster/app/opencti-redis
   prune: true
   wait: true

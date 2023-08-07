@@ -7,6 +7,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infra/rabbitmq-system
+  path: ./cluster/infra/rabbitmq-system
   prune: true
   wait: true

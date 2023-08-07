@@ -12,11 +12,11 @@ resource "azurerm_user_assigned_identity" "demo" {
   resource_group_name = azurerm_resource_group.demo.name
 
   provisioner "local-exec" {
-    command = "sed -i '' -r 's/client-id: (.*)/client-id: ${azurerm_user_assigned_identity.demo.client_id}/g' cluster/demo-euwest/flux-system/kustomization.yaml"
+    command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/client-id: (.*)/client-id: ${azurerm_user_assigned_identity.demo.client_id}/g' {} +"
   }
 
   provisioner "local-exec" {
-    command = "sed -i '' -r 's/clientId: (.*)/clientId: ${azurerm_user_assigned_identity.demo.client_id}/g' cluster/demo-euwest/flux-system/secret.yaml"
+    command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/clientId: (.*)/clientId: ${azurerm_user_assigned_identity.demo.client_id}/g' {} +"
   }
 
 }
@@ -85,6 +85,9 @@ resource "azurerm_key_vault" "demo" {
       "Get",
     ]
   }*/
+  provisioner "local-exec" {
+    command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/keyvaultName: (.*)/keyvaultName: ${azurerm_key_vault.demo.name}/g' {} +"
+  }
 }
 
 resource "azurerm_role_assignment" "demo_me" {
@@ -134,12 +137,12 @@ resource "azurerm_key_vault_key" "demo" {
   }
 
   provisioner "local-exec" {
-    command = "sops -e --in-place infra/opencti-elasticsearch/secret.yaml"
+    command = "sops -e --in-place cluster/app/opencti-elasticsearch/secret.yaml"
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "sops -d --in-place infra/opencti-elasticsearch/secret.yaml"
+    command = "sops -d --in-place cluster/app/opencti-elasticsearch/secret.yaml"
   }
 
   depends_on = [azurerm_role_assignment.demo_me]
@@ -266,24 +269,24 @@ resource "azurerm_storage_account" "opencti" {
   default_to_oauth_authentication  = true
 
   provisioner "local-exec" {
-    command = "sed -i '' -r 's/azurestorageaccountname: (.*)/azurestorageaccountname: ${azurerm_storage_account.opencti.name}/g' infra/storage/secret-sa.yaml"
+    command = "sed -i '' -r 's/azurestorageaccountname: (.*)/azurestorageaccountname: ${azurerm_storage_account.opencti.name}/g' cluster/infra/storage/secret-sa.yaml"
   }
 
   provisioner "local-exec" {
-    command = "sed -i '' -r 's/azurestorageaccountkey: (.*)/azurestorageaccountkey: ${replace(azurerm_storage_account.opencti.primary_access_key, "/\\//", "\\/")}/g' infra/storage/secret-sa.yaml"
+    command = "sed -i '' -r 's/azurestorageaccountkey: (.*)/azurestorageaccountkey: ${replace(azurerm_storage_account.opencti.primary_access_key, "/\\//", "\\/")}/g' cluster/infra/storage/secret-sa.yaml"
   }
 
   provisioner "local-exec" {
-    command = "sed -i '' -r 's/storageAccount: (.*)/storageAccount: ${azurerm_storage_account.opencti.name}/g' infra/storage/storageclass.yaml"
+    command = "find cluster/ -type f -name '*.yaml' -exec  sed -i '' -r 's/storageAccount: (.*)/storageAccount: ${azurerm_storage_account.opencti.name}/g' {} +"
   }
 
   provisioner "local-exec" {
-    command = "sops -e --in-place infra/storage/secret-sa.yaml"
+    command = "sops -e --in-place cluster/infra/storage/secret-sa.yaml"
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "sops -d --in-place infra/storage/secret-sa.yaml"
+    command = "sops -d --in-place cluster/infra/storage/secret-sa.yaml"
   }
 
   depends_on = [azurerm_key_vault_key.demo]
