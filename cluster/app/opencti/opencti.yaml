@@ -274,6 +274,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
+    - name: "opencti"
+      port: 8080
+      targetPort: 8080
   selector:
     app: opencti
