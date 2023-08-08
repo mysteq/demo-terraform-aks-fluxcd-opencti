@@ -1,25 +1,52 @@
----
-apiVersion: elasticsearch.k8s.elastic.co/v1
-kind: Elasticsearch
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: elasticsearch
+  labels:
+    app: opencti-worker
+    azure.workload.identity/use: "true"
+  name: opencti-worker
   namespace: opencti
 spec:
-  version: 8.8.0
-  secureSettings:
-  - secretName: elasticsearch-config-secret
-  nodeSets:
-  - name: default
-    count: 3
-    config:
-      node.store.allow_mmap: false
-    volumeClaimTemplates:
-    - metadata:
-        name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 5Gi
-        storageClassName: azurefile-csi-opencti
+  replicas: 3
+  selector:
+    matchLabels:
+      app: opencti-worker
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: opencti-worker
+    spec:
+      serviceAccountName: opencti-sa
+      containers:
+        - env:
+          - name: OPENCTI_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: opencti-secret
+                key: opencti-token
+          - name: OPENCTI_URL
+            value: "http://opencti:8080"
+          - name: WORKER_LOG_LEVEL
+            value: info
+          image: opencti/worker:5.9.6
+          name: worker
+          resources: 
+            limits:
+              memory: 256Mi
+              cpu: "250m"
+            requests:
+              memory: 56Mi
+              cpu: "100m"
+          volumeMounts:
+          - name: secrets-store01-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+      volumes:
+        - name: secrets-store01-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-kvname-workload-identity"
+      restartPolicy: Always
