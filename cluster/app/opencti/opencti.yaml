@@ -265,5 +265,14 @@ spec:
       targetPort: 8080
   selector:
     app: opencti
-status:
-  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opencti-public-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: opencti
