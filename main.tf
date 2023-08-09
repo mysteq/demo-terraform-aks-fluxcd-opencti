@@ -261,6 +261,15 @@ resource "azurerm_federated_identity_credential" "demo_identity_opencti-minio" {
   subject             = "system:serviceaccount:opencti-minio:opencti-minio-sa"
 }
 
+resource "azurerm_federated_identity_credential" "demo_identity_external-dns" {
+  name                = "demo-aks-westeu-opencti-minio"
+  resource_group_name = azurerm_resource_group.demo.name
+  issuer              = module.kubernetes.oidc_issuer_url
+  audience            = ["api://AzureADTokenExchange"]
+  parent_id           = azurerm_user_assigned_identity.demo.id
+  subject             = "system:serviceaccount:external-dns:external-dns-sa"
+}
+
 resource "azurerm_storage_account" "opencti" {
   name                             = "stdemoakswesteu${lower(random_id.id.hex)}"
   resource_group_name              = azurerm_resource_group.demo.name
