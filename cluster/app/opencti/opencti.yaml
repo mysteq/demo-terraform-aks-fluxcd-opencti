@@ -242,6 +242,8 @@ spec:
               secretKeyRef:
                 name: opencti-secret
                 key: opencti-config-redirect-uris
+          - name: PROVIDERS__LOCAL__STRATEGY
+            value: "LocalStrategy"
           image: opencti/platform:5.9.6
           name: opencti
           ports:
