@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - storage.yaml
+  - cert-manager.yaml
   - elastic-system.yaml
   - rabbitmq-system.yaml
   - opencti-elasticsearch.yaml
