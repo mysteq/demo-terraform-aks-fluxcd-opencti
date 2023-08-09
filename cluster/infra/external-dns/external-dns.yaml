@@ -29,4 +29,14 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    provider: azure
+    serviceAccount:
+      labels:
+        azure.workload.identity/use: "true"
+      annotations:
+        azure.workload.identity/client-id: 046748e0-ab09-469b-8415-5b2029ffc7e8
+    podAnnotations:
+      azure.workload.identity/inject-proxy-sidecar: "true"
+    podLabels:
+      azure.workload.identity/use: "true"
 ---
