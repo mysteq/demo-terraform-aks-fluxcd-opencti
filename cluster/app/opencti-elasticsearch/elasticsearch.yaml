@@ -59,12 +59,6 @@ spec:
   nodeSets:
   - name: default
     count: 3
-    resources:
-        requests:
-          memory: 4Gi
-          cpu: 2
-        limits:
-          memory: 4Gi
     podTemplate:
       metadata:
         labels:
@@ -73,6 +67,12 @@ spec:
         serviceAccountName: opencti-elasticsearch-sa
         containers:
           - name: elasticsearch
+            resources:
+              requests:
+                memory: 4Gi
+                cpu: 2
+              limits:
+                memory: 4Gi
             volumeMounts:
             - name: secrets-store01-inline
               mountPath: "/mnt/secrets-store"
