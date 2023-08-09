@@ -166,12 +166,13 @@ module "kubernetes" {
 
   key_vault_secrets_provider = {
     enabled = true
+    secret_rotation_enabled = true
   }
 
   default_node_pool = {
     name       = "default"
-    node_count = 1
-    vm_size    = "Standard_B4ms"
+    node_count = 2
+    vm_size    = "Standard_B2ms"
   }
 
   additional_node_pools = [
