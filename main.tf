@@ -463,3 +463,14 @@ resource "azurerm_key_vault_secret" "opencti-connector-id" {
 
   depends_on = [azurerm_role_assignment.demo_me]
 }
+
+resource "azurerm_dns_zone" "demo" {
+  name                = "k8s.4t2.no"
+  resource_group_name = azurerm_resource_group.demo.name
+}
+
+resource "azurerm_role_assignment" "demo-dns-uid" {
+  scope                = azurerm_dns_zone.demo.id
+  role_definition_name = "DNS Zone Contributor"
+  principal_id         = azurerm_user_assigned_identity.demo.principal_id
+}
