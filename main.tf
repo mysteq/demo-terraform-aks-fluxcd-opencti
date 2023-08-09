@@ -171,8 +171,8 @@ module "kubernetes" {
 
   default_node_pool = {
     name       = "default"
-    node_count = 2
-    vm_size    = "Standard_B2ms"
+    node_count = 1
+    vm_size    = "Standard_B4ms"
   }
 
   additional_node_pools = [
@@ -262,7 +262,7 @@ resource "azurerm_federated_identity_credential" "demo_identity_opencti-minio" {
 }
 
 resource "azurerm_federated_identity_credential" "demo_identity_external-dns" {
-  name                = "demo-aks-westeu-opencti-minio"
+  name                = "demo-aks-westeu-external-dns"
   resource_group_name = azurerm_resource_group.demo.name
   issuer              = module.kubernetes.oidc_issuer_url
   audience            = ["api://AzureADTokenExchange"]

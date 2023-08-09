@@ -289,11 +289,12 @@ metadata:
   name: opencti-ingress
   namespace: opencti
   annotations:
+    external-dns.alpha.kubernetes.io/hostname: ingress.k8s.4t2.no
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
   rules:
-  - host: ingress.k8s.4t2.no
+  - host: opencti.4t2.no
     http:
       paths:
       - path: /
