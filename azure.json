@@ -1,0 +1,6 @@
+{
+  "tenantId": "bb73082a-b74c-4d39-aec0-41c77d6f4850",
+  "subscriptionId": "e5183437-65de-4900-9987-9b9ff0fae0a3",
+  "resourceGroup": "demo-aks-westeu",
+  "useManagedIdentityExtension": true
+}
