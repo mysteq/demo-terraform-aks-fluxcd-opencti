@@ -283,16 +283,21 @@ spec:
   selector:
     app: opencti
 ---
-apiVersion: v1
-kind: Service
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: opencti-public-service
-  namespace: opencti
+  name: opencti-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
-  type: LoadBalancer
-  ports:
-    - name: "opencti"
-      port: 8080
-      targetPort: 8080
-  selector:
-    app: opencti
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: opencti
+            port:
+              number: 8080
