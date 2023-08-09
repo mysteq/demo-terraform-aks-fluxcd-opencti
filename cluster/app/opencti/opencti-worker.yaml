@@ -28,7 +28,7 @@ spec:
           - name: OPENCTI_URL
             value: "http://opencti:8080"
           - name: WORKER_LOG_LEVEL
-            value: info
+            value: "info"
           image: opencti/worker:5.9.6
           name: worker
           resources: 
