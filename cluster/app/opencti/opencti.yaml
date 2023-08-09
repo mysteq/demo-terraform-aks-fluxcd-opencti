@@ -292,6 +292,10 @@ metadata:
     external-dns.alpha.kubernetes.io/hostname: ingress.k8s.4t2.no
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.org/websocket-services: "opencti"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "stickounet"
+    nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
 spec:
   ingressClassName: nginx
   tls:
