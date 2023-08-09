@@ -5,54 +5,60 @@ metadata:
   name: opencti-sa
   namespace: opencti
   annotations:
-    azure.workload.identity/client-id: 63e399c8-d3ed-4f41-a4c9-7d0ccd963aa5
+    azure.workload.identity/client-id: 046748e0-ab09-469b-8415-5b2029ffc7e8
   labels:
     azure.workload.identity/use: "true"
 ---
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
-  name: azure-kvname-workload-identity # needs to be unique per namespace
+  name: azure-kvname-workload-identity
   namespace: opencti
 spec:
   provider: azure
-  secretObjects:                              # [OPTIONAL] SecretObjects defines the desired state of synced Kubernetes secret objects
+  secretObjects:
   - data:
-    - key: opencti-base-url                         # data field to populate
-      objectName: opencti-base-url                        # name of the mounted content to sync; this could be the object name or the object alias
-    - key: opencti-config-issuer                           # data field to populate
-      objectName: opencti-config-issuer                        # name of the mounted content to sync; this could be the object name or the object alias
-    - key: opencti-config-clientid                           # data field to populate
-      objectName: opencti-config-clientid                        # name of the mounted content to sync; this could be the object name or the object alias
-    - key: opencti-config-secret                           # data field to populate
-      objectName: opencti-config-secret                        # name of the mounted content to sync; this could be the object name or the object alias
-    - key: opencti-config-redirect-uris                           # data field to populate
-      objectName: opencti-config-redirect-uris                        # name of the mounted content to sync; this could be the object name or the object alias
-    - key: opencti-admin-email                           # data field to populate
-      objectName: opencti-admin-email                        # name of the mounted content to sync; this could be the object name or the object alias
-    - key: opencti-admin-password                           # data field to populate
-      objectName: opencti-admin-password                        # name of the mounted content to sync; this could be the object name or the object alias
-    - key: opencti-token                           # data field to populate
-      objectName: opencti-token                       # name of the mounted content to sync; this could be the object name or the object alias
-    - key: rabbitmq-default-user                          # data field to populate
-      objectName: rabbitmq-default-user                       # name of the mounted content to sync; this could be the object name or the object alias
-    - key: rabbitmq-default-password                          # data field to populate
-      objectName: rabbitmq-default-password                      # name of the mounted content to sync; this could be the object name or the object alias
-    - key: minio-root-user                           # data field to populate
-      objectName: minio-root-user                        # name of the mounted content to sync; this could be the object name or the object alias
-    - key: minio-root-password                          # data field to populate
-      objectName: minio-root-password                       # name of the mounted content to sync; this could be the object name or the object alias
+    - key: opencti-base-url
+      objectName: opencti-base-url 
+    - key: opencti-config-issuer 
+      objectName: opencti-config-issuer 
+    - key: opencti-config-clientid 
+      objectName: opencti-config-clientid 
+    - key: opencti-config-secret 
+      objectName: opencti-config-secret 
+    - key: opencti-config-redirect-uris 
+      objectName: opencti-config-redirect-uris 
+    - key: opencti-admin-email 
+      objectName: opencti-admin-email 
+    - key: opencti-admin-password 
+      objectName: opencti-admin-password 
+    - key: opencti-token 
+      objectName: opencti-token
+    - key: rabbitmq-default-user
+      objectName: rabbitmq-default-user
+    - key: rabbitmq-default-password
+      objectName: rabbitmq-default-password
+    - key: minio-root-user 
+      objectName: minio-root-user 
+    - key: minio-root-password
+      objectName: minio-root-password
     - key: elasticsearch-user
       objectName: elasticsearch-user
     - key: elasticsearch-password
       objectName: elasticsearch-password
+    - key: alienvault-connector-id
+      objectName: alienvault-connector-id
+    - key: opencti-connector-id
+      objectName: opencti-connector-id
+    - key: alienvault-api-key
+      objectName: alienvault-api-key
     secretName: opencti-secret                     # name of the Kubernetes secret object
     type: Opaque                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
   parameters:
     usePodIdentity: "false"
     useVMManagedIdentity: "false"          
-    clientID: "63e399c8-d3ed-4f41-a4c9-7d0ccd963aa5"
-    keyvaultName: demo-aks-westeu-c481
+    clientID: "046748e0-ab09-469b-8415-5b2029ffc7e8"
+    keyvaultName: demo-aks-westeu-a35b
     tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
     objects:  |
       array:
@@ -98,6 +104,15 @@ spec:
         - |
           objectName: elasticsearch-password
           objectType: secret 
+        - |
+          objectName: alienvault-connector-id
+          objectType: secret 
+        - |
+          objectName: opencti-connector-id
+          objectType: secret
+        - |
+          objectName: alienvault-api-key
+          objectType: secret
 ---
 apiVersion: apps/v1
 kind: Deployment

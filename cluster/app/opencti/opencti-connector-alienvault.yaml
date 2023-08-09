@@ -6,6 +6,7 @@ metadata:
   namespace: opencti
   labels:
    app: opencti-connector-alienvault
+   azure.workload.identity/use: "true"
 spec:
   replicas: 1
   selector:
@@ -17,44 +18,51 @@ spec:
       labels:
        app: opencti-connector-alienvault
     spec:
+      serviceAccountName: opencti-sa
       containers:
         - env:
             - name: CONNECTOR_CONFIDENCE_LEVEL
-              value: {{ .Values.CONFIDENCE_LEVEL | quote  }}
+              value: 15
             - name: CONNECTOR_ID
-              value: {{ .Values.CONNECTOR_ALIENVAULT_UUID | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: opencti-secret
+                  key: alienvault-connector-id
             - name: CONNECTOR_UPDATE_EXISTING_DATA
-              value: {{ .Values.CONNECTOR_ALIENVAULT_CONNECTOR_UPDATE_EXISTING_DATA | quote }}
+              value: false
             - name: CONNECTOR_LOG_LEVEL
-              value: {{ .Values.LOG_LEVEL }}
+              value: "info"
             - name: ALIENVAULT_BASE_URL
-              value: {{ .Values.CONNECTOR_ALIENVAULT_BASE_URL | quote }}     
+              value: "https://otx.alienvault.com"    
             - name: ALIENVAULT_API_KEY
-              value: {{ .Values.CONNECTOR_ALIENVAULT_API_KEY | quote }}     
+              valueFrom:
+                secretKeyRef:
+                  name: opencti-secret
+                  key: alienvault-api-key
             - name: ALIENVAULT_TLP
-              value: {{ .Values.CONNECTOR_ALIENVAULT_TLP | quote }}     
+              value: "White"   
             - name: ALIENVAULT_CREATE_OBSERVABLES
-              value: {{ .Values.CONNECTOR_ALIENVAULT_CREATE_OBSERVABLES | quote }}     
+              value: true    
             - name: ALIENVAULT_CREATE_INDICATORS
-              value: {{ .Values.CONNECTOR_ALIENVAULT_CREATE_INDICATORS | quote }}            
+              value: true          
             - name: ALIENVAULT_PULSE_START_TIMESTAMP
-              value: {{ .Values.CONNECTOR_ALIENVAULT_PULSE_START_TIMESTAMP | quote }}            
+              value: "2023-05-01T00:00:00"          
             - name: ALIENVAULT_REPORT_TYPE
-              value: {{ .Values.CONNECTOR_ALIENVAULT_REPORT_TYPE | quote }}
+              value: "threat-report"
             - name: ALIENVAULT_REPORT_STATUS
-              value: {{ .Values.CONNECTOR_ALIENVAULT_REPORT_STATUS | quote }}
+              value: "New"
             - name: ALIENVAULT_GUESS_MALWARE
-              value: {{ .Values.CONNECTOR_ALIENVAULT_GUESS_MALWARE | quote }}
+              value: false
             - name: ALIENVAULT_GUESS_CVE
-              value: {{ .Values.CONNECTOR_ALIENVAULT_GUESS_CVE | quote }}
+              value: false
             - name: ALIENVAULT_EXCLUDED_PULSE_INDICATOR_TYPES
-              value: {{ .Values.CONNECTOR_ALIENVAULT_EXCLUDED_PULSE_INDICATOR_TYPES | quote }}
+              value: FileHash-MD5,FileHash-SHA1
             - name: ALIENVAULT_ENABLE_RELATIONSHIPS
-              value: {{ .Values.CONNECTOR_ALIENVAULT_ENABLE_RELATIONSHIPS | quote }}
+              value: true
             - name: ALIENVAULT_ENABLE_ATTACK_PATTERNS_INDICATES
-              value: {{ .Values.CONNECTOR_ALIENVAULT_ENABLE_ATTACK_PATTERNS_INDICATES | quote }}
+              value: true
             - name: ALIENVAULT_INTERVAL_SEC
-              value: {{ .Values.CONNECTOR_ALIENVAULT_INTERVAL_SEC | quote }}
+              value: 1800
             - name: CONNECTOR_NAME
               value: "AlienVault"
             - name: CONNECTOR_SCOPE
@@ -62,10 +70,13 @@ spec:
             - name: CONNECTOR_TYPE
               value: EXTERNAL_IMPORT
             - name: OPENCTI_TOKEN
-              value: {{ .Values.OPENCTI_TOKEN }}
+              valueFrom:
+                secretKeyRef:
+                  name: opencti-secret
+                  key: opencti-token
             - name: OPENCTI_URL
-              value: "http://opencti-opencti:8080"
-          image: opencti/connector-alienvault:{{ .Chart.AppVersion }}
+              value: "http://opencti:8080"
+          image: opencti/connector-alienvault:5.9.6
           name: connector-alienvault
           resources: 
             limits:
@@ -74,4 +85,15 @@ spec:
             requests:
               memory: 256Mi
               cpu: "100m"
+          volumeMounts:
+          - name: secrets-store01-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+      volumes:
+        - name: secrets-store01-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-kvname-workload-identity"
       restartPolicy: Always

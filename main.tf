@@ -444,5 +444,21 @@ resource "azurerm_key_vault_secret" "elasticsearch-roles" {
 resource "random_uuid" "connector_id_alienvault" {
 }
 
+resource "azurerm_key_vault_secret" "alientvault-connector-id" {
+  name         = "alienvault-connector-id"
+  value        = random_uuid.connector_id_alienvault.result
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
+}
+
 resource "random_uuid" "connector_id_opencti" {
+}
+
+resource "azurerm_key_vault_secret" "opencti-connector-id" {
+  name         = "opencti-connector-id"
+  value        = random_uuid.connector_id_opencti.result
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }

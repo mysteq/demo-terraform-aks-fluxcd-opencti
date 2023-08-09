@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencti-connector-opencti
+  namespace: opencti
+  labels:
+   app: opencti-connector-opencti
+   azure.workload.identity/use: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: opencti-connector-opencti
+  strategy: {}
+  template:
+    metadata:
+      labels:
+       app: opencti-connector-opencti
+    spec:
+      serviceAccountName: opencti-sa
+      containers:
+        - env:
+            - name: CONNECTOR_CONFIDENCE_LEVEL
+              value: 90
+            - name: CONNECTOR_ID
+              valueFrom:
+                secretKeyRef:
+                  name: opencti-secret
+                  key: opencti-connector-id
+            - name: CONNECTOR_UPDATE_EXISTING_DATA
+              value: true
+            - name: CONNECTOR_LOG_LEVEL
+              value: "info"
+            - name: CONFIG_SECTORS_FILE_URL
+              value: "https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/sectors.json"
+            - name: CONFIG_GEOGRAPHY_FILE_URL
+              value: "https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/geography.json"
+            - name: CONFIG_INTERVAL
+              value: 7          
+            - name: CONNECTOR_NAME
+              value: "OpenCTI"
+            - name: CONNECTOR_SCOPE
+              value: "marking-definition,identity,location"
+            - name: CONNECTOR_TYPE
+              value: EXTERNAL_IMPORT
+            - name: OPENCTI_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: opencti-secret
+                  key: opencti-token
+            - name: OPENCTI_URL
+              value: "http://opencti:8080"
+          image: opencti/connector-opencti:5.9.6
+          name: connector-opencti
+          resources: 
+            limits:
+              memory: 256Mi
+              cpu: "200m"
+            requests:
+              memory: 56Mi
+              cpu: "100m"
+          volumeMounts:
+          - name: secrets-store01-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+      volumes:
+        - name: secrets-store01-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-kvname-workload-identity"
+      restartPolicy: Always

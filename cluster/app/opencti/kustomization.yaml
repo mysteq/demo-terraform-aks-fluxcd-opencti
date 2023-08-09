@@ -4,3 +4,5 @@ resources:
 - namespace.yaml
 - opencti.yaml
 - opencti-worker.yaml
+- opencti-connector-opencti.yaml
+- opencti-connector-alienvault.yaml
