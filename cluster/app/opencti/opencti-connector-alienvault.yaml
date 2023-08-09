@@ -22,7 +22,7 @@ spec:
       containers:
         - env:
             - name: CONNECTOR_CONFIDENCE_LEVEL
-              value: 15
+              value: "15"
             - name: CONNECTOR_ID
               valueFrom:
                 secretKeyRef:
@@ -62,7 +62,7 @@ spec:
             - name: ALIENVAULT_ENABLE_ATTACK_PATTERNS_INDICATES
               value: true
             - name: ALIENVAULT_INTERVAL_SEC
-              value: 1800
+              value: "1800"
             - name: CONNECTOR_NAME
               value: "AlienVault"
             - name: CONNECTOR_SCOPE
