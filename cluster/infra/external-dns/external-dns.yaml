@@ -39,4 +39,6 @@ spec:
       azure.workload.identity/inject-proxy-sidecar: "true"
     podLabels:
       azure.workload.identity/use: "true"
+    domainFilters:
+      - k8s.4t2.no
 ---
