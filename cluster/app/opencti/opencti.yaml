@@ -290,9 +290,13 @@ metadata:
   namespace: opencti
   annotations:
     external-dns.alpha.kubernetes.io/hostname: ingress.k8s.4t2.no
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - opencti.4t2.no
+    secretName: selfsigned-cert-tls
   rules:
   - host: opencti.4t2.no
     http:
@@ -304,3 +308,23 @@ spec:
             name: opencti
             port:
               number: 8080
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: test-selfsigned
+  namespace: opencti
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: selfsigned-cert
+  namespace: opencti
+spec:
+  dnsNames:
+    - opencti.4t2.no
+  secretName: selfsigned-cert-tls
+  issuerRef:
+    name: test-selfsigned
