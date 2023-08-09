@@ -29,7 +29,7 @@ spec:
                   name: opencti-secret
                   key: alienvault-connector-id
             - name: CONNECTOR_UPDATE_EXISTING_DATA
-              value: false
+              value: "false"
             - name: CONNECTOR_LOG_LEVEL
               value: "info"
             - name: ALIENVAULT_BASE_URL
@@ -42,9 +42,9 @@ spec:
             - name: ALIENVAULT_TLP
               value: "White"   
             - name: ALIENVAULT_CREATE_OBSERVABLES
-              value: true    
+              value: "true"    
             - name: ALIENVAULT_CREATE_INDICATORS
-              value: true          
+              value: "true"      
             - name: ALIENVAULT_PULSE_START_TIMESTAMP
               value: "2023-05-01T00:00:00"          
             - name: ALIENVAULT_REPORT_TYPE
@@ -52,15 +52,15 @@ spec:
             - name: ALIENVAULT_REPORT_STATUS
               value: "New"
             - name: ALIENVAULT_GUESS_MALWARE
-              value: false
+              value: "false"
             - name: ALIENVAULT_GUESS_CVE
-              value: false
+              value: "false"
             - name: ALIENVAULT_EXCLUDED_PULSE_INDICATOR_TYPES
               value: FileHash-MD5,FileHash-SHA1
             - name: ALIENVAULT_ENABLE_RELATIONSHIPS
-              value: true
+              value: "true"
             - name: ALIENVAULT_ENABLE_ATTACK_PATTERNS_INDICATES
-              value: true
+              value: "true"
             - name: ALIENVAULT_INTERVAL_SEC
               value: "1800"
             - name: CONNECTOR_NAME

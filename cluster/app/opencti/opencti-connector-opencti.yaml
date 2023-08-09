@@ -22,14 +22,14 @@ spec:
       containers:
         - env:
             - name: CONNECTOR_CONFIDENCE_LEVEL
-              value: 90
+              value: "90"
             - name: CONNECTOR_ID
               valueFrom:
                 secretKeyRef:
                   name: opencti-secret
                   key: opencti-connector-id
             - name: CONNECTOR_UPDATE_EXISTING_DATA
-              value: true
+              value: "true"
             - name: CONNECTOR_LOG_LEVEL
               value: "info"
             - name: CONFIG_SECTORS_FILE_URL
