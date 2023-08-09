@@ -4,6 +4,7 @@ namespace: flux-system
 resources:
   - storage.yaml
   - cert-manager.yaml
+  - external-dns.yaml
   - elastic-system.yaml
   - rabbitmq-system.yaml
   - opencti-elasticsearch.yaml
