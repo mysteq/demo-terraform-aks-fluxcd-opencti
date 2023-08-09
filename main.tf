@@ -179,7 +179,7 @@ module "kubernetes" {
     {
       name                = "pool1"
       min_count           = 1
-      max_count           = 3
+      max_count           = 4
       enable_auto_scaling = true
       vm_size             = "Standard_B4ms"
     },
