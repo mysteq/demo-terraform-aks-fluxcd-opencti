@@ -59,6 +59,12 @@ spec:
   nodeSets:
   - name: default
     count: 3
+    resources:
+        requests:
+          memory: 4Gi
+          cpu: 2
+        limits:
+          memory: 4Gi
     podTemplate:
       metadata:
         labels:
