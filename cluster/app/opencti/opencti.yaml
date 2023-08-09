@@ -292,7 +292,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: ingress.k8s.4t2.no
+    http:
       paths:
       - path: /
         pathType: Prefix
