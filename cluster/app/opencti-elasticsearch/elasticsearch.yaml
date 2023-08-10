@@ -92,7 +92,6 @@ spec:
           command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
     config:
       xpack.ml.enabled: false
-      xpack.security.enabled: true
       index.store.type: niofs
     volumeClaimTemplates:
     - metadata:
