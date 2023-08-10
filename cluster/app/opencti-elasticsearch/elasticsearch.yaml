@@ -51,6 +51,9 @@ metadata:
   namespace: opencti-elasticsearch
 spec:
   version: 8.8.0
+  auth:
+    fileRealm:
+    - secretName: elasticsearch-auth-secret
   secureSettings:
   - secretName: elasticsearch-config-secret
   nodeSets:
@@ -83,8 +86,13 @@ spec:
                 secretProviderClass: "opencti-elasticsearch-secretprovider"
     config:
       xpack.ml.enabled: false
-      xpack.security.enabled: false
+      xpack.security.enabled: true
       node.store.allow_mmap: false
+      xpack.security.authc:
+        anonymous:
+          username: anonymous_user
+          roles: superuser
+          authz_exception: false 
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
