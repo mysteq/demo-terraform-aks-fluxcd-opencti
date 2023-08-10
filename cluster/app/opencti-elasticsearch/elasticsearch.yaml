@@ -86,6 +86,7 @@ spec:
                 secretProviderClass: "opencti-elasticsearch-secretprovider"
     config:
       xpack.ml.enabled: false
+      xpack.security.enabled: false
       node.store.allow_mmap: false
     volumeClaimTemplates:
     - metadata:
