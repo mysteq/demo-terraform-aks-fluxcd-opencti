@@ -51,9 +51,6 @@ metadata:
   namespace: opencti-elasticsearch
 spec:
   version: 8.9.0
-  auth:
-    fileRealm:
-    - secretName: elasticsearch-auth-secret
   secureSettings:
   - secretName: elasticsearch-config-secret
   nodeSets:
