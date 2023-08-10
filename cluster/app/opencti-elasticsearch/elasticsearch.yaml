@@ -93,6 +93,7 @@ spec:
     config:
       xpack.ml.enabled: false
       xpack.security.enabled: true
+      index.store.type: niofs
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
