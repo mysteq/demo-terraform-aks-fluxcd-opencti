@@ -13,7 +13,7 @@ mountOptions:
   - nosharesock
 parameters:
   skuName: Standard_LRS
-  storageAccount: stdemoakswesteua35b
+  storageAccount: stdemoakswesteud325
   resourceGroup: demo-aks-westeu
   shareName: opencti-${pvc.metadata.name}
   secretName: azure-storage-account-opencti-secret

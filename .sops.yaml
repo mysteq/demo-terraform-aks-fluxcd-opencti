@@ -2,4 +2,4 @@
 creation_rules:
   - path_regex: .*.yaml
     encrypted_regex: ^(data|stringData)$
-    azure_keyvault: https://demo-aks-westeu-a35b.vault.azure.net/keys/sops-key/4a8c8ec42463415eadb29dfe6de34a06
+    azure_keyvault: https://demo-aks-westeu-d325.vault.azure.net/keys/sops-key/200bb42e3a7044d48483102f4b7fda37
