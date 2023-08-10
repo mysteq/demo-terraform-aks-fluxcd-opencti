@@ -88,11 +88,6 @@ spec:
       xpack.ml.enabled: false
       xpack.security.enabled: true
       node.store.allow_mmap: false
-      xpack.security.authc:
-        anonymous:
-          username: anonymous_user
-          roles: superuser
-          authz_exception: false 
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
