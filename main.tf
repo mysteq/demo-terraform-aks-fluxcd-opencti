@@ -18,7 +18,7 @@ resource "azurerm_user_assigned_identity" "demo" {
   provisioner "local-exec" {
     command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/clientId: (.*)/clientId: ${azurerm_user_assigned_identity.demo.client_id}/g' {} +"
   }
-  
+
   provisioner "local-exec" {
     command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/clientID: (.*)/clientID: \"${azurerm_user_assigned_identity.demo.client_id}\"/g' {} +"
   }
@@ -40,55 +40,13 @@ resource "azurerm_key_vault" "demo" {
 
   sku_name = "standard"
 
-  /*access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
-
-    key_permissions = [
-      "Create",
-      "Delete",
-      "Get",
-      "Purge",
-      "Recover",
-      "Update",
-      "GetRotationPolicy",
-      "SetRotationPolicy",
-      "Encrypt",
-      "Decrypt",
-      "List"
-    ]
-
-    secret_permissions = [
-      "Set",
-      "Get",
-      "Delete",
-      "Purge",
-      "Recover",
-      "List"
-    ]
-
-    storage_permissions = [
-      "Get",
-    ]
+  network_acls {
+    bypass                     = "None"
+    default_action             = "Deny"
+    ip_rules                   = ["79.160.225.150"]
+    virtual_network_subnet_ids = [azurerm_subnet.demo-aks.id]
   }
 
-  access_policy {
-    tenant_id = azurerm_user_assigned_identity.demo.tenant_id
-    object_id = azurerm_user_assigned_identity.demo.principal_id
-
-    key_permissions = [
-      "Get",
-      "Decrypt",
-    ]
-
-    secret_permissions = [
-      "Get",
-    ]
-
-    storage_permissions = [
-      "Get",
-    ]
-  }*/
   provisioner "local-exec" {
     command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/keyvaultName: (.*)/keyvaultName: ${azurerm_key_vault.demo.name}/g' {} +"
   }
@@ -152,6 +110,23 @@ resource "azurerm_key_vault_key" "demo" {
   depends_on = [azurerm_role_assignment.demo_me]
 }
 
+resource "azurerm_virtual_network" "demo" {
+  name                = "demo-aks-westeu"
+  resource_group_name = azurerm_resource_group.demo.name
+  location            = azurerm_resource_group.demo.location
+
+  address_space = ["10.140.0.0/16"]
+}
+
+resource "azurerm_subnet" "demo-aks" {
+  name                 = "aks"
+  resource_group_name  = azurerm_resource_group.demo.name
+  virtual_network_name = azurerm_virtual_network.demo.name
+  address_prefixes     = ["10.140.0.0/22"]
+
+  service_endpoints = ["Microsoft.KeyVault", "Microsoft.Storage"]
+}
+
 module "kubernetes" {
   #source  = "amestofortytwo/aks/azurerm"
   #version = "3.0.0"
@@ -165,14 +140,20 @@ module "kubernetes" {
   workload_identity_enabled = true
 
   key_vault_secrets_provider = {
-    enabled = true
+    enabled                 = true
     secret_rotation_enabled = true
   }
 
+  network_profile = {
+    network_plugin = "azure"
+    vnet_subnet_id = azurerm_subnet.demo-aks.id
+  }
+
   default_node_pool = {
-    name       = "default"
-    node_count = 2
-    vm_size    = "Standard_B2ms"
+    name                 = "default"
+    node_count           = 2
+    vm_size              = "Standard_B2ms"
+    virtual_network_name = azurerm_virtual_network.demo.name
   }
 
   additional_node_pools = [
@@ -281,6 +262,12 @@ resource "azurerm_storage_account" "opencti" {
   min_tls_version                  = "TLS1_2"
   cross_tenant_replication_enabled = false
   default_to_oauth_authentication  = true
+
+  network_rules {
+    default_action             = "Deny"
+    ip_rules                   = ["79.160.225.150"]
+    virtual_network_subnet_ids = [azurerm_subnet.demo-aks.id]
+  }
 
   provisioner "local-exec" {
     command = "sed -i '' -r 's/azurestorageaccountname: (.*)/azurestorageaccountname: ${azurerm_storage_account.opencti.name}/g' cluster/infra/storage/secret-sa.yaml"
