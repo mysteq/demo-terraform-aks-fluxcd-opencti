@@ -58,7 +58,7 @@ spec:
   - secretName: elasticsearch-config-secret
   nodeSets:
   - name: default
-    count: 1
+    count: 3
     podTemplate:
       metadata:
         labels:
