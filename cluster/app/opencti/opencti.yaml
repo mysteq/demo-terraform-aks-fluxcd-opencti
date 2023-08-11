@@ -289,7 +289,7 @@ metadata:
   name: opencti-ingress
   namespace: opencti
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: ingress.k8s.4t2.no
+    external-dns.alpha.kubernetes.io/hostname: opencti-ingress.k8s.4t2.no
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.org/websocket-services: "opencti"
     nginx.ingress.kubernetes.io/affinity: "cookie"
