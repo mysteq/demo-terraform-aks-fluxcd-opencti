@@ -5,7 +5,7 @@ metadata:
   name: opencti-elasticsearch-sa
   namespace: opencti-elasticsearch
   annotations:
-    azure.workload.identity/client-id: 202c13b6-a51e-4db7-9c99-b0522a7c8347
+    azure.workload.identity/client-id: 21a508e3-67e1-45a7-9984-24ce4c685682
   labels:
     azure.workload.identity/use: "true"
 ---
@@ -29,8 +29,8 @@ spec:
   parameters:
     usePodIdentity: "false"
     useVMManagedIdentity: "false"          
-    clientID: "202c13b6-a51e-4db7-9c99-b0522a7c8347"
-    keyvaultName: demo-aks-westeu-d325
+    clientID: "21a508e3-67e1-45a7-9984-24ce4c685682"
+    keyvaultName: demo-aks-westeu-0a7b
     tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
     objects:  |
       array:
