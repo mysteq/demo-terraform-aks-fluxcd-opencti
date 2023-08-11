@@ -13,4 +13,5 @@ resources:
   - opencti-redis.yaml
   - opencti-rabbitmq.yaml
   - opencti.yaml
+  - opencti-stack.yaml
   
