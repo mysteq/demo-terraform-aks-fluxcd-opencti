@@ -83,7 +83,14 @@ spec:
     replicas: 3
     resources:
       requests:
+        cpu: 500m
         memory: 1Gi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    networkPolicy:
+      enabled: true
+      allowExternal: false
     existingSecret: minio-root-secret
     tolerations:
     - key: "kubernetes.azure.com/scalesetpriority"

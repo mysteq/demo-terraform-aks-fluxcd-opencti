@@ -195,6 +195,7 @@ spec:
     metadata:
       labels:
         app: opencti
+        minio-client: "true"
     spec:
       # serviceAccountName: opencti-sa
       containers:
