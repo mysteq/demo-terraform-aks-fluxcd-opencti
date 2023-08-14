@@ -81,10 +81,10 @@ spec:
           resources: 
             limits:
               memory: 512Mi
-              cpu: "250m"
+              cpu: "0.5"
             requests:
               memory: 256Mi
-              cpu: "100m"
+              cpu: "0.2"
       #     volumeMounts:
       #     - name: secrets-store01-inline
       #       mountPath: "/mnt/secrets-store"
