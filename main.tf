@@ -141,6 +141,7 @@ module "kubernetes" {
 
   network_profile = {
     network_plugin = "azure"
+    network_policy = "azure"
     vnet_subnet_id = azurerm_subnet.demo-aks.id
   }
 
@@ -273,26 +274,26 @@ resource "azurerm_storage_account" "opencti" {
     virtual_network_subnet_ids = [azurerm_subnet.demo-aks.id]
   }
 
-#  provisioner "local-exec" {
-#    command = "sed -i '' -r 's/azurestorageaccountname: (.*)/azurestorageaccountname: ${azurerm_storage_account.opencti.name}/g' cluster/infra/storage/secret-sa.yaml"
-#  }
+  #  provisioner "local-exec" {
+  #    command = "sed -i '' -r 's/azurestorageaccountname: (.*)/azurestorageaccountname: ${azurerm_storage_account.opencti.name}/g' cluster/infra/storage/secret-sa.yaml"
+  #  }
 
-#  provisioner "local-exec" {
-#    command = "sed -i '' -r 's/azurestorageaccountkey: (.*)/azurestorageaccountkey: ${replace(azurerm_storage_account.opencti.primary_access_key, "/\\//", "\\/")}/g' cluster/infra/storage/secret-sa.yaml"
-#  }
+  #  provisioner "local-exec" {
+  #    command = "sed -i '' -r 's/azurestorageaccountkey: (.*)/azurestorageaccountkey: ${replace(azurerm_storage_account.opencti.primary_access_key, "/\\//", "\\/")}/g' cluster/infra/storage/secret-sa.yaml"
+  #  }
 
   provisioner "local-exec" {
     command = "find cluster/ -type f -name '*.yaml' -exec  sed -i '' -r 's/storageAccount: (.*)/storageAccount: ${azurerm_storage_account.opencti.name}/g' {} +"
   }
 
-#  provisioner "local-exec" {
-#    command = "sops -e --in-place cluster/infra/storage/secret-sa.yaml"
-#  }
+  #  provisioner "local-exec" {
+  #    command = "sops -e --in-place cluster/infra/storage/secret-sa.yaml"
+  #  }
 
-#  provisioner "local-exec" {
-#    when    = destroy
-#    command = "sops -d --in-place cluster/infra/storage/secret-sa.yaml"
-#  }
+  #  provisioner "local-exec" {
+  #    when    = destroy
+  #    command = "sops -d --in-place cluster/infra/storage/secret-sa.yaml"
+  #  }
 
   depends_on = [azurerm_key_vault_key.demo]
 }

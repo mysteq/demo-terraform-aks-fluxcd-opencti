@@ -116,10 +116,11 @@ spec:
           - name: elasticsearch
             resources:
               requests:
-                memory: 8Gi
+                memory: 16Gi
                 cpu: 2
               limits:
-                memory: 8Gi
+                memory: 16Gi
+                cpu: 4
         #     volumeMounts:
         #     - name: secrets-store01-inline
         #       mountPath: "/mnt/secrets-store"
