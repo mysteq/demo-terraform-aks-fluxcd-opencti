@@ -12,6 +12,8 @@ mountOptions:
   - gid=1000
   - nosharesock
 parameters:
+  storageAccount: stdemoakswesteue84a
+  resourceGroup: demo-aks-westeu
   shareName: opencti-${pvc.metadata.name}
   secretName: azure-storage-account-opencti-secret
   secretNamespace: opencti-storage
