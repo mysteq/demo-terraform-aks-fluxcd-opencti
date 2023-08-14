@@ -1,0 +1,51 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: opencti-elasticsearch
+  namespace: opencti-elasticsearch
+spec:
+  egress:
+  - ports:
+    - port: 9300
+      protocol: TCP
+    to:
+    - namespaceSelector:
+        matchLabels:
+          eck.k8s.elastic.co/tenant: opencti-elasticsearch
+      podSelector:
+        matchLabels:
+          common.k8s.elastic.co/type: elasticsearch
+  - ports:
+    - port: 53
+      protocol: UDP
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          eck.k8s.elastic.co/operator-name: elastic-operator
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: elastic-operator
+    - namespaceSelector:
+        matchLabels:
+          eck.k8s.elastic.co/tenant: opencti-elasticsearch
+    - namespaceSelector:
+        matchLabels:
+          name: opencti
+    ports:
+    - port: 9200
+      protocol: TCP
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          eck.k8s.elastic.co/tenant: opencti-elasticsearch
+      podSelector:
+        matchLabels:
+          common.k8s.elastic.co/type: elasticsearch
+    ports:
+    - port: 9300
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      common.k8s.elastic.co/type: elasticsearch
