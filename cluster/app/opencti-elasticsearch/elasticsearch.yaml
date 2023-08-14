@@ -1,71 +1,94 @@
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: opencti-elasticsearch-sa
-  namespace: opencti-elasticsearch
-  annotations:
-    azure.workload.identity/client-id: 7271ff27-7e12-483b-9962-826ab1bdb9a0
-  labels:
-    azure.workload.identity/use: "true"
+#---
+#apiVersion: v1
+#kind: ServiceAccount
+#metadata:
+#  name: opencti-elasticsearch-sa
+#  namespace: opencti-elasticsearch
+#  annotations:
+#    azure.workload.identity/client-id: 7271ff27-7e12-483b-9962-826ab1bdb9a0
+#  labels:
+#    azure.workload.identity/use: "true"
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: "hello-world"
+  name: elasticsearch-config-secret
   namespace: opencti-elasticsearch
 spec:
   secretStoreRef:
     name: akv-backend
     kind: ClusterSecretStore
-  refreshInterval: "1h"
+  refreshInterval: "10m"
   data:
     - secretKey: bootstrap.password
       remoteRef:
         key: elasticsearch-bootstrap-password
 ---
-apiVersion: secrets-store.csi.x-k8s.io/v1
-kind: SecretProviderClass
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
-  name: opencti-elasticsearch-secretprovider # needs to be unique per namespace
+  name: elasticsearch-auth-secret
   namespace: opencti-elasticsearch
 spec:
-  provider: azure
-  secretObjects:                              # [OPTIONAL] SecretObjects defines the desired state of synced Kubernetes secret objects
-  - data:
-    - key: username                        # data field to populate
-      objectName: elasticsearch-user                       # name of the mounted content to sync; this could be the object name or the object alias
-    - key: password                          # data field to populate
-      objectName: elasticsearch-password                       # name of the mounted content to sync; this could be the object name or the object alias
-    - key: roles
-      objectName: elasticsearch-roles
-    secretName: elasticsearch-auth-secret                    # name of the Kubernetes secret object
-    type: kubernetes.io/basic-auth                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
-  - data:
-    - key: bootstrap.password
-      objectName: elasticsearch-bootstrap-password
-    secretName: elasticsearch-config-secret
-    type: Opaque
-  parameters:
-    usePodIdentity: "false"
-    useVMManagedIdentity: "false"          
-    clientID: "7271ff27-7e12-483b-9962-826ab1bdb9a0"
-    keyvaultName: demo-aks-westeu-e84a
-    tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
-    objects:  |
-      array:
-        - |
-          objectName: elasticsearch-user
-          objectType: secret
-        - |
-          objectName: elasticsearch-password
-          objectType: secret
-        - |
-          objectName: elasticsearch-roles
-          objectType: secret
-        - |
-          objectName: elasticsearch-bootstrap-password
-          objectType: secret
+  secretStoreRef:
+    name: akv-backend
+    kind: ClusterSecretStore
+  refreshInterval: "10m"
+  template:
+    type: kubernetes.io/basic-auth
+  data:
+    - secretKey: username
+      remoteRef:
+        key: elasticsearch-user
+    - secretKey: password
+      remoteRef:
+        key: elasticsearch-password
+    - secretKey: roles
+      remoteRef:
+        key: elasticsearch-roles
+#---
+#apiVersion: secrets-store.csi.x-k8s.io/v1
+#kind: SecretProviderClass
+#metadata:
+#  name: opencti-elasticsearch-secretprovider # needs to be unique per namespace
+#  namespace: opencti-elasticsearch
+#spec:
+#  provider: azure
+#  secretObjects:                              # [OPTIONAL] SecretObjects defines the desired state of synced Kubernetes secret objects
+#  - data:
+#    - key: username                        # data field to populate
+#      objectName: elasticsearch-user                       # name of the mounted content to sync; this could be the object name or the object alias
+#    - key: password                          # data field to populate
+#      objectName: elasticsearch-password                       # name of the mounted content to sync; this could be the object name or the object alias
+#    - key: roles
+#      objectName: elasticsearch-roles
+#    secretName: elasticsearch-auth-secret                    # name of the Kubernetes secret object
+#    type: kubernetes.io/basic-auth                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
+#  - data:
+#    - key: bootstrap.password
+#      objectName: elasticsearch-bootstrap-password
+#    secretName: elasticsearch-config-secret
+#    type: Opaque
+#  parameters:
+#    usePodIdentity: "false"
+#    useVMManagedIdentity: "false"          
+#    clientID: "7271ff27-7e12-483b-9962-826ab1bdb9a0"
+#    keyvaultName: demo-aks-westeu-e84a
+#    tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
+#    objects:  |
+#      array:
+#        - |
+#          objectName: elasticsearch-user
+#          objectType: secret
+#        - |
+#          objectName: elasticsearch-password
+#          objectType: secret
+#        - |
+#          objectName: elasticsearch-roles
+#          objectType: secret
+#        - |
+#          objectName: elasticsearch-bootstrap-password
+#          objectType: secret
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
