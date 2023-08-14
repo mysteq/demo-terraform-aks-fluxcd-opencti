@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
 - namespace.yaml
 - minio.yaml
-- defaultnetworkpolicy.yaml
+- networkpolicy.yaml
 
 # patches:
 #   - patch: |-
