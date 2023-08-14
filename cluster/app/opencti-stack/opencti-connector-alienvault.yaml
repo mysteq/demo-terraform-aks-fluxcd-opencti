@@ -96,4 +96,18 @@ spec:
       #       readOnly: true
       #       volumeAttributes:
       #         secretProviderClass: "azure-kvname-workload-identity"
+      tolerations:
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "kubernetes.azure.com/scalesetpriority"
+                operator: In
+                values:
+                - "spot"
       restartPolicy: Always
