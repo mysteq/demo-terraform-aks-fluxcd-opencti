@@ -50,6 +50,10 @@ resource "azurerm_key_vault" "demo" {
   provisioner "local-exec" {
     command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/keyvaultName: (.*)/keyvaultName: ${azurerm_key_vault.demo.name}/g' {} +"
   }
+
+  provisioner "local-exec" {
+    command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/vaultUrl: (.*)/vaultUrl: \"${replace(azurerm_key_vault.demo.vault_uri, "/", "\\/")}\"/g' {} +"
+  }
 }
 
 resource "azurerm_role_assignment" "demo_me" {
@@ -96,15 +100,6 @@ resource "azurerm_key_vault_key" "demo" {
 
   provisioner "local-exec" {
     command = "sed -i '' -r 's/azure_keyvault: (.*)/azure_keyvault: ${replace(azurerm_key_vault.demo.vault_uri, "/\\//", "\\/")}keys\\/${azurerm_key_vault_key.demo.name}\\/${azurerm_key_vault_key.demo.version}/g' .sops.yaml"
-  }
-
-  provisioner "local-exec" {
-    command = "sops -e --in-place cluster/app/opencti-elasticsearch/secret.yaml"
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "sops -d --in-place cluster/app/opencti-elasticsearch/secret.yaml"
   }
 
   depends_on = [azurerm_role_assignment.demo_me]
@@ -251,6 +246,15 @@ resource "azurerm_federated_identity_credential" "demo_identity_external-dns" {
   subject             = "system:serviceaccount:external-dns:external-dns-sa"
 }
 
+resource "azurerm_federated_identity_credential" "demo_identity_secret-store" {
+  name                = "demo-aks-westeu-secret-store"
+  resource_group_name = azurerm_resource_group.demo.name
+  issuer              = module.kubernetes.oidc_issuer_url
+  audience            = ["api://AzureADTokenExchange"]
+  parent_id           = azurerm_user_assigned_identity.demo.id
+  subject             = "system:serviceaccount:secret-store:secret-store-sa"
+}
+
 resource "azurerm_storage_account" "opencti" {
   name                             = "stdemoakswesteu${lower(random_id.id.hex)}"
   resource_group_name              = azurerm_resource_group.demo.name
@@ -303,6 +307,36 @@ resource "azurerm_role_assignment" "demo_sa_aks" {
   scope                = azurerm_storage_account.opencti.id
   role_definition_name = "Storage Account Contributor"
   principal_id         = module.kubernetes.identity[0].principal_id
+}
+
+resource "azurerm_key_vault_secret" "storageaccountname" {
+  name         = "storageaccountname"
+  value        = azurerm_storage_account.opencti.name
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
+}
+
+resource "azurerm_key_vault_secret" "storageaccountkey" {
+  name         = "storageaccountkey"
+  value        = azurerm_storage_account.opencti.primary_access_key
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
+}
+
+resource "random_password" "elasticsearch-bootstrap-password" {
+  length  = 16
+  special = false
+  upper   = false
+}
+
+resource "azurerm_key_vault_secret" "elasticsearch-bootstrap-password" {
+  name         = "elasticsearch-bootstrap-password"
+  value        = random_password.elasticsearch-bootstrap-password.result
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "random_uuid" "opencti_token" {

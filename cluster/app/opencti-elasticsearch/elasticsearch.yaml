@@ -5,7 +5,7 @@ metadata:
   name: opencti-elasticsearch-sa
   namespace: opencti-elasticsearch
   annotations:
-    azure.workload.identity/client-id: 6e9a9921-5e91-4157-b421-0061409d34b0
+    azure.workload.identity/client-id: 7271ff27-7e12-483b-9962-826ab1bdb9a0
   labels:
     azure.workload.identity/use: "true"
 ---
@@ -26,11 +26,16 @@ spec:
       objectName: elasticsearch-roles
     secretName: elasticsearch-auth-secret                    # name of the Kubernetes secret object
     type: kubernetes.io/basic-auth                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
+  - data:
+    - key: bootstrap.password
+      objectName: elasticsearch-bootstrap-password
+    secretName: elasticsearch-config-secret
+    type: Opaque
   parameters:
     usePodIdentity: "false"
     useVMManagedIdentity: "false"          
-    clientID: "6e9a9921-5e91-4157-b421-0061409d34b0"
-    keyvaultName: demo-aks-westeu-6be9
+    clientID: "7271ff27-7e12-483b-9962-826ab1bdb9a0"
+    keyvaultName: demo-aks-westeu-e84a
     tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
     objects:  |
       array:
@@ -42,6 +47,9 @@ spec:
           objectType: secret
         - |
           objectName: elasticsearch-roles
+          objectType: secret
+        - |
+          objectName: elasticsearch-bootstrap-password
           objectType: secret
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
@@ -69,10 +77,10 @@ spec:
           - name: elasticsearch
             resources:
               requests:
-                memory: 4Gi
+                memory: 8Gi
                 cpu: 2
               limits:
-                memory: 4Gi
+                memory: 8Gi
             volumeMounts:
             - name: secrets-store01-inline
               mountPath: "/mnt/secrets-store"
@@ -93,6 +101,7 @@ spec:
     config:
       xpack.ml.enabled: false
       index.store.type: niofs
+      discovery.type: single-node
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.

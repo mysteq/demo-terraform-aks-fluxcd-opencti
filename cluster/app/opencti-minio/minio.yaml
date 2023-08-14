@@ -17,8 +17,8 @@ spec:
   parameters:
     usePodIdentity: "false"
     useVMManagedIdentity: "false"          
-    clientID: "6e9a9921-5e91-4157-b421-0061409d34b0"
-    keyvaultName: demo-aks-westeu-6be9
+    clientID: "7271ff27-7e12-483b-9962-826ab1bdb9a0"
+    keyvaultName: demo-aks-westeu-e84a
     tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
     objects:  |
       array:

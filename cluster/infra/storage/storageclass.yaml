@@ -12,12 +12,12 @@ mountOptions:
   - gid=1000
   - nosharesock
 parameters:
-  skuName: Standard_LRS
-  storageAccount: stdemoakswesteu6be9
-  resourceGroup: demo-aks-westeu
   shareName: opencti-${pvc.metadata.name}
   secretName: azure-storage-account-opencti-secret
   secretNamespace: opencti-storage
 provisioner: file.csi.azure.com
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
+#  skuName: Standard_LRS
+#  storageAccount: stdemoakswesteue84a
+#  resourceGroup: demo-aks-westeu

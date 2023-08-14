@@ -13,4 +13,6 @@ spec:
   decryption:
     provider: sops
     secretRef:
-      name: sops-keys  
+      name: sops-keys
+  dependsOn: 
+    - name: secret-store
