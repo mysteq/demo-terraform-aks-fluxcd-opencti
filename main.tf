@@ -273,26 +273,26 @@ resource "azurerm_storage_account" "opencti" {
     virtual_network_subnet_ids = [azurerm_subnet.demo-aks.id]
   }
 
-  provisioner "local-exec" {
-    command = "sed -i '' -r 's/azurestorageaccountname: (.*)/azurestorageaccountname: ${azurerm_storage_account.opencti.name}/g' cluster/infra/storage/secret-sa.yaml"
-  }
+#  provisioner "local-exec" {
+#    command = "sed -i '' -r 's/azurestorageaccountname: (.*)/azurestorageaccountname: ${azurerm_storage_account.opencti.name}/g' cluster/infra/storage/secret-sa.yaml"
+#  }
 
-  provisioner "local-exec" {
-    command = "sed -i '' -r 's/azurestorageaccountkey: (.*)/azurestorageaccountkey: ${replace(azurerm_storage_account.opencti.primary_access_key, "/\\//", "\\/")}/g' cluster/infra/storage/secret-sa.yaml"
-  }
+#  provisioner "local-exec" {
+#    command = "sed -i '' -r 's/azurestorageaccountkey: (.*)/azurestorageaccountkey: ${replace(azurerm_storage_account.opencti.primary_access_key, "/\\//", "\\/")}/g' cluster/infra/storage/secret-sa.yaml"
+#  }
 
   provisioner "local-exec" {
     command = "find cluster/ -type f -name '*.yaml' -exec  sed -i '' -r 's/storageAccount: (.*)/storageAccount: ${azurerm_storage_account.opencti.name}/g' {} +"
   }
 
-  provisioner "local-exec" {
-    command = "sops -e --in-place cluster/infra/storage/secret-sa.yaml"
-  }
+#  provisioner "local-exec" {
+#    command = "sops -e --in-place cluster/infra/storage/secret-sa.yaml"
+#  }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = "sops -d --in-place cluster/infra/storage/secret-sa.yaml"
-  }
+#  provisioner "local-exec" {
+#    when    = destroy
+#    command = "sops -d --in-place cluster/infra/storage/secret-sa.yaml"
+#  }
 
   depends_on = [azurerm_key_vault_key.demo]
 }
@@ -307,6 +307,30 @@ resource "azurerm_role_assignment" "demo_sa_aks" {
   scope                = azurerm_storage_account.opencti.id
   role_definition_name = "Storage Account Contributor"
   principal_id         = module.kubernetes.identity[0].principal_id
+}
+
+resource "azurerm_key_vault_secret" "tenantid" {
+  name         = "azuretenantid"
+  value        = data.azurerm_client_config.current.tenant_id
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
+}
+
+resource "azurerm_key_vault_secret" "subscriptionid" {
+  name         = "azuresubscriptionid"
+  value        = data.azurerm_client_config.current.subscription_id
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
+}
+
+resource "azurerm_key_vault_secret" "resourcegroupname" {
+  name         = "azurereourcegroupname"
+  value        = azurerm_resource_group.demo.name
+  key_vault_id = azurerm_key_vault.demo.id
+
+  depends_on = [azurerm_role_assignment.demo_me]
 }
 
 resource "azurerm_key_vault_secret" "storageaccountname" {

@@ -1,34 +1,52 @@
 ---
-apiVersion: secrets-store.csi.x-k8s.io/v1
-kind: SecretProviderClass
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
-  name: opencti-minio-secretprovider # needs to be unique per namespace
+  name: minio-root-secret
   namespace: opencti-minio
 spec:
-  provider: azure
-  secretObjects:                              # [OPTIONAL] SecretObjects defines the desired state of synced Kubernetes secret objects
-  - data:
-    - key: rootUser
-      objectName: minio-root-user
-    - key: rootPassword
-      objectName: minio-root-password
-    secretName: minio-root-secret
-    type: Opaque
-  parameters:
-    usePodIdentity: "false"
-    useVMManagedIdentity: "false"          
-    clientID: "7271ff27-7e12-483b-9962-826ab1bdb9a0"
-    keyvaultName: demo-aks-westeu-e84a
-    tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
-    objects:  |
-      array:
-        - |
-          objectName: minio-root-user
-          objectType: secret
-        - |
-          objectName: minio-root-password
-          objectType: secret
+  secretStoreRef:
+    name: akv-backend
+    kind: ClusterSecretStore
+  refreshInterval: "10m"
+  data:
+    - secretKey: rootUser
+      remoteRef:
+        key: minio-root-user
+    - secretKey: rootPassword
+      remoteRef:
+        key: minio-root-password
 ---
+# apiVersion: secrets-store.csi.x-k8s.io/v1
+# kind: SecretProviderClass
+# metadata:
+#   name: opencti-minio-secretprovider # needs to be unique per namespace
+#   namespace: opencti-minio
+# spec:
+#   provider: azure
+#   secretObjects:                              # [OPTIONAL] SecretObjects defines the desired state of synced Kubernetes secret objects
+#   - data:
+#     - key: rootUser
+#       objectName: minio-root-user
+#     - key: rootPassword
+#       objectName: minio-root-password
+#     secretName: minio-root-secret
+#     type: Opaque
+#   parameters:
+#     usePodIdentity: "false"
+#     useVMManagedIdentity: "false"          
+#     clientID: "88466e0c-cd29-4635-9bf5-877b316c5c9a"
+#     keyvaultName: demo-aks-westeu-898b
+#     tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
+#     objects:  |
+#       array:
+#         - |
+#           objectName: minio-root-user
+#           objectType: secret
+#         - |
+#           objectName: minio-root-password
+#           objectType: secret
+# ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
@@ -67,20 +85,20 @@ spec:
       requests:
         memory: 1Gi
     existingSecret: minio-root-secret
-    serviceAccount:
-      create: true
-      name: opencti-minio-sa
-    podLabels:
-      azure.workload.identity/use: "true"
-    extraVolumeMounts:
-      - name: secrets-store01-inline
-        mountPath: "/mnt/secrets-store"
-        readOnly: true
-    extraVolumes:
-      - name: secrets-store01-inline
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: "opencti-minio-secretprovider"
+    # serviceAccount:
+    #   create: true
+    #   name: opencti-minio-sa
+    # podLabels:
+    #   azure.workload.identity/use: "true"
+    # extraVolumeMounts:
+    #   - name: secrets-store01-inline
+    #     mountPath: "/mnt/secrets-store"
+    #     readOnly: true
+    # extraVolumes:
+    #   - name: secrets-store01-inline
+    #     csi:
+    #       driver: secrets-store.csi.k8s.io
+    #       readOnly: true
+    #       volumeAttributes:
+    #         secretProviderClass: "opencti-minio-secretprovider"
 ---

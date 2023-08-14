@@ -1,4 +1,35 @@
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: external-dns-secret
+  namespace: external-dns
+spec:
+  secretStoreRef:
+    name: akv-backend
+    kind: ClusterSecretStore
+  refreshInterval: "10m"
+  target:
+    template:
+      data:
+        azure.json: |
+          {
+            "tenantId": "{{ .azuretenantid }}",
+            "subscriptionId": "{{ .azuresubscriptionid }}",
+            "resourceGroup": "{{ .resourcegroupname }}",
+            "useManagedIdentityExtension": true
+          }
+  data:
+    - secretKey: azuretenantid
+      remoteRef:
+        key: azuretenantid
+    - secretKey: subscriptionid
+      remoteRef:
+        key: subscriptionid
+    - secretKey: resourcegroupname
+      remoteRef:
+        key: resourcegroupname
+---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
@@ -35,22 +66,30 @@ spec:
       labels:
         azure.workload.identity/use: "true"
       annotations:
-        azure.workload.identity/client-id: 7271ff27-7e12-483b-9962-826ab1bdb9a0
+        azure.workload.identity/client-id: 88466e0c-cd29-4635-9bf5-877b316c5c9a
     podAnnotations:
       azure.workload.identity/inject-proxy-sidecar: "true"
     podLabels:
       azure.workload.identity/use: "true"
     domainFilters:
       - k8s.4t2.no
-    secretConfiguration:
-      enabled: true
-      mountPath: /etc/kubernetes
-      data:
-        azure.json: |
-          {
-            "tenantId": "bb73082a-b74c-4d39-aec0-41c77d6f4850",
-            "subscriptionId": "e5183437-65de-4900-9987-9b9ff0fae0a3",
-            "resourceGroup": "demo-aks-westeu",
-            "useManagedIdentityExtension": true
-          }
+    extraVolumes:
+      - name: azure-credentials
+        secret:
+          secretName: external-dns-secret
+    extraVolumeMounts:
+      - name: azure-credentials
+        mountPath: /etc/kubernetes
+        readOnly: true
+    # secretConfiguration:
+    #   enabled: true
+    #   mountPath: /etc/kubernetes
+    #   data:
+    #     azure.json: |
+    #       {
+    #         "tenantId": "bb73082a-b74c-4d39-aec0-41c77d6f4850",
+    #         "subscriptionId": "e5183437-65de-4900-9987-9b9ff0fae0a3",
+    #         "resourceGroup": "demo-aks-westeu",
+    #         "useManagedIdentityExtension": true
+    #       }
 ---

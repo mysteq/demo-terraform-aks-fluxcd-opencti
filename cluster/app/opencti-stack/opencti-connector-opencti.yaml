@@ -6,7 +6,7 @@ metadata:
   namespace: opencti
   labels:
    app: opencti-connector-opencti
-   azure.workload.identity/use: "true"
+  #  azure.workload.identity/use: "true"
 spec:
   replicas: 1
   selector:
@@ -18,7 +18,7 @@ spec:
       labels:
        app: opencti-connector-opencti
     spec:
-      serviceAccountName: opencti-sa
+      # serviceAccountName: opencti-sa
       containers:
         - env:
             - name: CONNECTOR_CONFIDENCE_LEVEL
@@ -60,15 +60,15 @@ spec:
             requests:
               memory: 56Mi
               cpu: "100m"
-          volumeMounts:
-          - name: secrets-store01-inline
-            mountPath: "/mnt/secrets-store"
-            readOnly: true
-      volumes:
-        - name: secrets-store01-inline
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: "azure-kvname-workload-identity"
+      #     volumeMounts:
+      #     - name: secrets-store01-inline
+      #       mountPath: "/mnt/secrets-store"
+      #       readOnly: true
+      # volumes:
+      #   - name: secrets-store01-inline
+      #     csi:
+      #       driver: secrets-store.csi.k8s.io
+      #       readOnly: true
+      #       volumeAttributes:
+      #         secretProviderClass: "azure-kvname-workload-identity"
       restartPolicy: Always

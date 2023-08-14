@@ -5,7 +5,7 @@
 #  name: opencti-elasticsearch-sa
 #  namespace: opencti-elasticsearch
 #  annotations:
-#    azure.workload.identity/client-id: 7271ff27-7e12-483b-9962-826ab1bdb9a0
+#    azure.workload.identity/client-id: 88466e0c-cd29-4635-9bf5-877b316c5c9a
 #  labels:
 #    azure.workload.identity/use: "true"
 ---
@@ -72,8 +72,8 @@ spec:
 #  parameters:
 #    usePodIdentity: "false"
 #    useVMManagedIdentity: "false"          
-#    clientID: "7271ff27-7e12-483b-9962-826ab1bdb9a0"
-#    keyvaultName: demo-aks-westeu-e84a
+#    clientID: "88466e0c-cd29-4635-9bf5-877b316c5c9a"
+#    keyvaultName: demo-aks-westeu-898b
 #    tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
 #    objects:  |
 #      array:
@@ -106,11 +106,11 @@ spec:
   - name: default
     count: 1
     podTemplate:
-      metadata:
-        labels:
-          azure.workload.identity/use: "true"
+      # metadata:
+      #   labels:
+      #     azure.workload.identity/use: "true"
       spec:
-        serviceAccountName: opencti-elasticsearch-sa
+        # serviceAccountName: opencti-elasticsearch-sa
         containers:
           - name: elasticsearch
             resources:
@@ -119,17 +119,17 @@ spec:
                 cpu: 2
               limits:
                 memory: 8Gi
-            volumeMounts:
-            - name: secrets-store01-inline
-              mountPath: "/mnt/secrets-store"
-              readOnly: true
-        volumes:
-          - name: secrets-store01-inline
-            csi:
-              driver: secrets-store.csi.k8s.io
-              readOnly: true
-              volumeAttributes:
-                secretProviderClass: "opencti-elasticsearch-secretprovider"
+        #     volumeMounts:
+        #     - name: secrets-store01-inline
+        #       mountPath: "/mnt/secrets-store"
+        #       readOnly: true
+        # volumes:
+        #   - name: secrets-store01-inline
+        #     csi:
+        #       driver: secrets-store.csi.k8s.io
+        #       readOnly: true
+        #       volumeAttributes:
+        #         secretProviderClass: "opencti-elasticsearch-secretprovider"
         initContainers:
         - name: sysctl
           securityContext:

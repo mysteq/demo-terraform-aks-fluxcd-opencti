@@ -10,3 +10,5 @@ spec:
   path: ./cluster/infra/external-dns
   prune: true
   wait: true
+  dependsOn:
+    - name: external-secrets

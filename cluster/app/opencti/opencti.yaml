@@ -1,119 +1,182 @@
 ---
-apiVersion: v1
-kind: ServiceAccount
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
-  name: opencti-sa
-  namespace: opencti
-  annotations:
-    azure.workload.identity/client-id: 7271ff27-7e12-483b-9962-826ab1bdb9a0
-  labels:
-    azure.workload.identity/use: "true"
----
-apiVersion: secrets-store.csi.x-k8s.io/v1
-kind: SecretProviderClass
-metadata:
-  name: azure-kvname-workload-identity
+  name: opencti-secret
   namespace: opencti
 spec:
-  provider: azure
-  secretObjects:
-  - data:
-    - key: opencti-base-url
-      objectName: opencti-base-url 
-    - key: opencti-config-issuer 
-      objectName: opencti-config-issuer 
-    - key: opencti-config-clientid 
-      objectName: opencti-config-clientid 
-    - key: opencti-config-secret 
-      objectName: opencti-config-secret 
-    - key: opencti-config-redirect-uris 
-      objectName: opencti-config-redirect-uris 
-    - key: opencti-admin-email 
-      objectName: opencti-admin-email 
-    - key: opencti-admin-password 
-      objectName: opencti-admin-password 
-    - key: opencti-token 
-      objectName: opencti-token
-    - key: rabbitmq-default-user
-      objectName: rabbitmq-default-user
-    - key: rabbitmq-default-password
-      objectName: rabbitmq-default-password
-    - key: minio-root-user 
-      objectName: minio-root-user 
-    - key: minio-root-password
-      objectName: minio-root-password
-    - key: elasticsearch-user
-      objectName: elasticsearch-user
-    - key: elasticsearch-password
-      objectName: elasticsearch-password
-    - key: alienvault-connector-id
-      objectName: alienvault-connector-id
-    - key: opencti-connector-id
-      objectName: opencti-connector-id
-    - key: alienvault-api-key
-      objectName: alienvault-api-key
-    secretName: opencti-secret                     # name of the Kubernetes secret object
-    type: Opaque                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
-  parameters:
-    usePodIdentity: "false"
-    useVMManagedIdentity: "false"          
-    clientID: "7271ff27-7e12-483b-9962-826ab1bdb9a0"
-    keyvaultName: demo-aks-westeu-e84a
-    tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
-    objects:  |
-      array:
-        - |
-          objectName: opencti-base-url
-          objectType: secret
-        - |
-          objectName: opencti-config-issuer
-          objectType: secret
-        - |
-          objectName: opencti-config-clientid
-          objectType: secret
-        - |
-          objectName: opencti-config-secret
-          objectType: secret
-        - |
-          objectName: opencti-config-redirect-uris
-          objectType: secret
-        - |
-          objectName: opencti-admin-email
-          objectType: secret
-        - |
-          objectName: opencti-admin-password
-          objectType: secret 
-        - |
-          objectName: opencti-token
-          objectType: secret 
-        - |
-          objectName: rabbitmq-default-user
-          objectType: secret 
-        - |
-          objectName: rabbitmq-default-password
-          objectType: secret 
-        - |
-          objectName: minio-root-user
-          objectType: secret 
-        - |
-          objectName: minio-root-password
-          objectType: secret 
-        - |
-          objectName: elasticsearch-user
-          objectType: secret 
-        - |
-          objectName: elasticsearch-password
-          objectType: secret 
-        - |
-          objectName: alienvault-connector-id
-          objectType: secret 
-        - |
-          objectName: opencti-connector-id
-          objectType: secret
-        - |
-          objectName: alienvault-api-key
-          objectType: secret
+  secretStoreRef:
+    name: akv-backend
+    kind: ClusterSecretStore
+  refreshInterval: "10m"
+  data:
+    - secretKey: opencti-base-url
+      remoteRef:
+        key: opencti-base-url
+    - secretKey: opencti-config-issuer 
+      remoteRef:
+        key: opencti-config-issuer 
+    - secretKey: opencti-config-clientid
+      remoteRef:
+        key: opencti-config-clientid
+    - secretKey: opencti-config-secret 
+      remoteRef:
+        key: opencti-config-secret 
+    - secretKey: opencti-config-redirect-uris
+      remoteRef:
+        key: opencti-config-redirect-uris
+    - secretKey: opencti-admin-email
+      remoteRef:
+        key: opencti-admin-email
+    - secretKey: opencti-admin-password
+      remoteRef:
+        key: opencti-admin-password
+    - secretKey: opencti-token
+      remoteRef:
+        key: opencti-token
+    - secretKey: rabbitmq-default-user
+      remoteRef:
+        key: rabbitmq-default-user
+    - secretKey: rabbitmq-default-password
+      remoteRef:
+        key: rabbitmq-default-password
+    - secretKey: minio-root-user
+      remoteRef:
+        key: minio-root-user
+    - secretKey: minio-root-password
+      remoteRef:
+        key: minio-root-password
+    - secretKey: elasticsearch-user
+      remoteRef:
+        key: elasticsearch-user
+    - secretKey: elasticsearch-password
+      remoteRef:
+        key: elasticsearch-password
+    - secretKey: alienvault-connector-id
+      remoteRef:
+        key: alienvault-connector-id
+    - secretKey: opencti-connector-id
+      remoteRef:
+        key: opencti-connector-id
+    - secretKey: alienvault-api-key
+      remoteRef:
+        key: alienvault-api-key
 ---
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: opencti-sa
+#   namespace: opencti
+#   annotations:
+#     azure.workload.identity/client-id: 88466e0c-cd29-4635-9bf5-877b316c5c9a
+#   labels:
+#     azure.workload.identity/use: "true"
+# ---
+# apiVersion: secrets-store.csi.x-k8s.io/v1
+# kind: SecretProviderClass
+# metadata:
+#   name: azure-kvname-workload-identity
+#   namespace: opencti
+# spec:
+#   provider: azure
+#   secretObjects:
+#   - data:
+#     - key: opencti-base-url
+#       objectName: opencti-base-url 
+#     - key: opencti-config-issuer 
+#       objectName: opencti-config-issuer 
+#     - key: opencti-config-clientid 
+#       objectName: opencti-config-clientid 
+#     - key: opencti-config-secret 
+#       objectName: opencti-config-secret 
+#     - key: opencti-config-redirect-uris 
+#       objectName: opencti-config-redirect-uris 
+#     - key: opencti-admin-email 
+#       objectName: opencti-admin-email 
+#     - key: opencti-admin-password 
+#       objectName: opencti-admin-password 
+#     - key: opencti-token 
+#       objectName: opencti-token
+#     - key: rabbitmq-default-user
+#       objectName: rabbitmq-default-user
+#     - key: rabbitmq-default-password
+#       objectName: rabbitmq-default-password
+#     - key: minio-root-user 
+#       objectName: minio-root-user 
+#     - key: minio-root-password
+#       objectName: minio-root-password
+#     - key: elasticsearch-user
+#       objectName: elasticsearch-user
+#     - key: elasticsearch-password
+#       objectName: elasticsearch-password
+#     - key: alienvault-connector-id
+#       objectName: alienvault-connector-id
+#     - key: opencti-connector-id
+#       objectName: opencti-connector-id
+#     - key: alienvault-api-key
+#       objectName: alienvault-api-key
+#     secretName: opencti-secret                     # name of the Kubernetes secret object
+#     type: Opaque                              # type of Kubernetes secret object (for example, Opaque, kubernetes.io/tls)  
+#   parameters:
+#     usePodIdentity: "false"
+#     useVMManagedIdentity: "false"          
+#     clientID: "88466e0c-cd29-4635-9bf5-877b316c5c9a"
+#     keyvaultName: demo-aks-westeu-898b
+#     tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
+#     objects:  |
+#       array:
+#         - |
+#           objectName: opencti-base-url
+#           objectType: secret
+#         - |
+#           objectName: opencti-config-issuer
+#           objectType: secret
+#         - |
+#           objectName: opencti-config-clientid
+#           objectType: secret
+#         - |
+#           objectName: opencti-config-secret
+#           objectType: secret
+#         - |
+#           objectName: opencti-config-redirect-uris
+#           objectType: secret
+#         - |
+#           objectName: opencti-admin-email
+#           objectType: secret
+#         - |
+#           objectName: opencti-admin-password
+#           objectType: secret 
+#         - |
+#           objectName: opencti-token
+#           objectType: secret 
+#         - |
+#           objectName: rabbitmq-default-user
+#           objectType: secret 
+#         - |
+#           objectName: rabbitmq-default-password
+#           objectType: secret 
+#         - |
+#           objectName: minio-root-user
+#           objectType: secret 
+#         - |
+#           objectName: minio-root-password
+#           objectType: secret 
+#         - |
+#           objectName: elasticsearch-user
+#           objectType: secret 
+#         - |
+#           objectName: elasticsearch-password
+#           objectType: secret 
+#         - |
+#           objectName: alienvault-connector-id
+#           objectType: secret 
+#         - |
+#           objectName: opencti-connector-id
+#           objectType: secret
+#         - |
+#           objectName: alienvault-api-key
+#           objectType: secret
+# ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
