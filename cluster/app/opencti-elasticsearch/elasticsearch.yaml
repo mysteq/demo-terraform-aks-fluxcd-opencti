@@ -116,8 +116,6 @@ spec:
     config:
       xpack.ml.enabled: false
       index.store.type: niofs
-      discovery.type: single-node
-      cluster.initial_master_nodes: ""
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
