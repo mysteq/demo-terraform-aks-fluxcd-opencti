@@ -34,8 +34,9 @@ spec:
     name: akv-backend
     kind: ClusterSecretStore
   refreshInterval: "10m"
-  template:
-    type: kubernetes.io/basic-auth
+  target:
+    template:
+      type: kubernetes.io/basic-auth
   data:
     - secretKey: username
       remoteRef:
