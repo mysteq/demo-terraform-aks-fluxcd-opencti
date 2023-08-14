@@ -5,7 +5,7 @@
 #  name: opencti-elasticsearch-sa
 #  namespace: opencti-elasticsearch
 #  annotations:
-#    azure.workload.identity/client-id: 88466e0c-cd29-4635-9bf5-877b316c5c9a
+#    azure.workload.identity/client-id: f9d92e71-c895-4b7f-94a3-58e09a2297d7
 #  labels:
 #    azure.workload.identity/use: "true"
 ---
@@ -73,8 +73,8 @@ spec:
 #  parameters:
 #    usePodIdentity: "false"
 #    useVMManagedIdentity: "false"          
-#    clientID: "88466e0c-cd29-4635-9bf5-877b316c5c9a"
-#    keyvaultName: demo-aks-westeu-898b
+#    clientID: "f9d92e71-c895-4b7f-94a3-58e09a2297d7"
+#    keyvaultName: demo-aks-westeu-9599
 #    tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
 #    objects:  |
 #      array:
@@ -105,7 +105,7 @@ spec:
   - secretName: elasticsearch-config-secret
   nodeSets:
   - name: default
-    count: 1
+    count: 3
     podTemplate:
       # metadata:
       #   labels:
@@ -116,10 +116,10 @@ spec:
           - name: elasticsearch
             resources:
               requests:
-                memory: 10Gi
+                memory: 16Gi
                 cpu: 2
               limits:
-                memory: 10Gi
+                memory: 16Gi
                 cpu: 2
         #     volumeMounts:
         #     - name: secrets-store01-inline
@@ -132,12 +132,26 @@ spec:
         #       readOnly: true
         #       volumeAttributes:
         #         secretProviderClass: "opencti-elasticsearch-secretprovider"
-        initContainers:
-        - name: sysctl
-          securityContext:
-            privileged: true
-            runAsUser: 0
-          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
+        # initContainers:
+        # - name: sysctl
+        #   securityContext:
+        #     privileged: true
+        #     runAsUser: 0
+        #   command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
+        tolerations:
+        - key: "kubernetes.azure.com/scalesetpriority"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: "kubernetes.azure.com/scalesetpriority"
+                  operator: In
+                  values:
+                  - "spot"
     config:
       xpack.ml.enabled: false
     volumeClaimTemplates:

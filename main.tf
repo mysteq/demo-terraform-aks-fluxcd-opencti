@@ -134,11 +134,6 @@ module "kubernetes" {
 
   workload_identity_enabled = true
 
-  key_vault_secrets_provider = {
-    enabled                 = true
-    secret_rotation_enabled = true
-  }
-
   network_profile = {
     network_plugin = "azure"
     network_policy = "azure"
@@ -147,18 +142,54 @@ module "kubernetes" {
 
   default_node_pool = {
     name                 = "default"
-    node_count           = 2
+    autoscale = {
+      min_count = 1
+      max_count = 3
+    }
+    enable_auto_scaling  = true
     vm_size              = "Standard_B2ms"
-    virtual_network_name = azurerm_virtual_network.demo.name
   }
 
   additional_node_pools = [
     {
       name                = "pool1"
       min_count           = 1
-      max_count           = 4
+      max_count           = 2
       enable_auto_scaling = true
       vm_size             = "Standard_B4ms"
+      linux_os_config = {
+        sysctl_config = {
+          "vm_max_map_count" = "262144"
+        }
+      }
+    },
+    {
+      name                = "spot1"
+      min_count           = 1
+      max_count           = 3
+      enable_auto_scaling = true
+      vm_size             = "Standard_E4_v3"
+      spot_max_price      = "0.04"
+      priority            = "Spot"
+      linux_os_config = {
+        sysctl_config = {
+          "vm_max_map_count" = "262144"
+        }
+      }
+    },
+    {
+      name                = "spot2"
+      min_count           = 1
+      max_count           = 3
+      enable_auto_scaling = true
+      vm_size             = "Standard_E4_v4"
+      spot_max_price      = "0.04"
+      priority            = "Spot"
+      linux_os_config = {
+        sysctl_config = {
+          "vm_max_map_count" = "262144"
+        }
+      }
     },
   ]
 
@@ -202,7 +233,7 @@ resource "azurerm_federated_identity_credential" "demo" {
   subject             = "system:serviceaccount:flux-system:kustomize-controller"
 }
 
-resource "azurerm_federated_identity_credential" "demo_identity_opencti" {
+/*resource "azurerm_federated_identity_credential" "demo_identity_opencti" {
   name                = "demo-aks-westeu-opencti"
   resource_group_name = azurerm_resource_group.demo.name
   issuer              = module.kubernetes.oidc_issuer_url
@@ -236,7 +267,7 @@ resource "azurerm_federated_identity_credential" "demo_identity_opencti-minio" {
   audience            = ["api://AzureADTokenExchange"]
   parent_id           = azurerm_user_assigned_identity.demo.id
   subject             = "system:serviceaccount:opencti-minio:opencti-minio-sa"
-}
+}*/
 
 resource "azurerm_federated_identity_credential" "demo_identity_external-dns" {
   name                = "demo-aks-westeu-external-dns"
