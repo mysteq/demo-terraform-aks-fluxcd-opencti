@@ -148,6 +148,7 @@ module "kubernetes" {
     }
     enable_auto_scaling  = true
     vm_size              = "Standard_B2ms"
+    node_taints = [ "CriticalAddonsOnly=true:NoSchedule" ]
   }
 
   additional_node_pools = [
