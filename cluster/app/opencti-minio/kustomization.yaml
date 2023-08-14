@@ -3,19 +3,20 @@ kind: Kustomization
 resources:
 - namespace.yaml
 - minio.yaml
+- defaultnetworkpolicy.yaml
 
-patches:
-  - patch: |-
-      apiVersion: v1
-      kind: ServiceAccount
-      metadata:
-        name: opencti-minio-sa
-        namespace: opencti-minio
-        annotations:
-          azure.workload.identity/client-id: f9d92e71-c895-4b7f-94a3-58e09a2297d7
-        labels:
-          azure.workload.identity/use: "true"
-    target:
-      kind: ServiceAccount
-      name: opencti-minio-sa
-      namespace: opencti-minio
+# patches:
+#   - patch: |-
+#       apiVersion: v1
+#       kind: ServiceAccount
+#       metadata:
+#         name: opencti-minio-sa
+#         namespace: opencti-minio
+#         annotations:
+#           azure.workload.identity/client-id: f9d92e71-c895-4b7f-94a3-58e09a2297d7
+#         labels:
+#           azure.workload.identity/use: "true"
+#     target:
+#       kind: ServiceAccount
+#       name: opencti-minio-sa
+#       namespace: opencti-minio
