@@ -1,7 +1,17 @@
+locals {
+  tags = {
+    environment  = "demo"
+    deletiondate = "2023-08-31"
+    createdby    = "ketil"
+    source       = "terraform"
+  }
+}
 
 resource "azurerm_resource_group" "demo" {
   name     = "demo-aks-westeu"
   location = "westeurope"
+
+  tags = local.tags
 }
 
 data "azurerm_client_config" "current" {}
@@ -23,6 +33,7 @@ resource "azurerm_user_assigned_identity" "demo" {
     command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/clientID: (.*)/clientID: \"${azurerm_user_assigned_identity.demo.client_id}\"/g' {} +"
   }
 
+  tags = local.tags
 }
 
 resource "random_id" "id" {
@@ -54,6 +65,8 @@ resource "azurerm_key_vault" "demo" {
   provisioner "local-exec" {
     command = "find cluster/ -type f -name '*.yaml' -exec sed -i '' -r 's/vaultUrl: (.*)/vaultUrl: \"${replace(azurerm_key_vault.demo.vault_uri, "/", "\\/")}\"/g' {} +"
   }
+
+  tags = local.tags
 }
 
 resource "azurerm_role_assignment" "demo_me" {
@@ -103,6 +116,7 @@ resource "azurerm_key_vault_key" "demo" {
   }
 
   depends_on = [azurerm_role_assignment.demo_me]
+  tags       = local.tags
 }
 
 resource "azurerm_virtual_network" "demo" {
@@ -111,6 +125,7 @@ resource "azurerm_virtual_network" "demo" {
   location            = azurerm_resource_group.demo.location
 
   address_space = ["10.140.0.0/16"]
+  tags          = local.tags
 }
 
 resource "azurerm_subnet" "demo-aks" {
@@ -141,14 +156,14 @@ module "kubernetes" {
   }
 
   default_node_pool = {
-    name                 = "default"
+    name = "default"
     autoscale = {
       min_count = 1
       max_count = 3
     }
-    enable_auto_scaling  = true
-    vm_size              = "Standard_B2ms"
-    node_taints = [ "CriticalAddonsOnly=true:NoSchedule" ]
+    enable_auto_scaling = true
+    vm_size             = "Standard_B2ms"
+#    node_taints         = ["CriticalAddonsOnly=true:NoSchedule"]
   }
 
   additional_node_pools = [
@@ -171,6 +186,8 @@ module "kubernetes" {
       enable_auto_scaling = true
       vm_size             = "Standard_E4_v3"
       spot_max_price      = "0.04"
+      eviction_policy     = "Delete"
+      node_taints         = ["kubernetes.azure.com/scalesetpriority=spot:NoSchedule"]
       priority            = "Spot"
       linux_os_config = {
         sysctl_config = {
@@ -185,6 +202,8 @@ module "kubernetes" {
       enable_auto_scaling = true
       vm_size             = "Standard_E4_v4"
       spot_max_price      = "0.04"
+      eviction_policy     = "Delete"
+      node_taints         = ["kubernetes.azure.com/scalesetpriority=spot:NoSchedule"]
       priority            = "Spot"
       linux_os_config = {
         sysctl_config = {
@@ -194,9 +213,7 @@ module "kubernetes" {
     },
   ]
 
-  tags = {
-    environment = "demo"
-  }
+  tags = local.tags
 }
 
 //data "azurerm_kubernetes_cluster" "demo" {
@@ -328,6 +345,7 @@ resource "azurerm_storage_account" "opencti" {
   #  }
 
   depends_on = [azurerm_key_vault_key.demo]
+  tags       = local.tags
 }
 
 resource "azurerm_role_assignment" "demo_sa_me" {
@@ -554,6 +572,8 @@ resource "azurerm_key_vault_secret" "opencti-connector-id" {
 resource "azurerm_dns_zone" "demo" {
   name                = "k8s.4t2.no"
   resource_group_name = azurerm_resource_group.demo.name
+
+  tags = local.tags
 }
 
 resource "azurerm_role_assignment" "demo-dns-uid" {
