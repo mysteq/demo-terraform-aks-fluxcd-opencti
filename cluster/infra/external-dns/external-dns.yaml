@@ -16,19 +16,19 @@ spec:
           {
             "tenantId": "{{ .azuretenantid }}",
             "subscriptionId": "{{ .azuresubscriptionid }}",
-            "resourceGroup": "{{ .resourcegroupname }}",
+            "resourceGroup": "{{ .azurereourcegroupname }}",
             "useManagedIdentityExtension": true
           }
   data:
     - secretKey: azuretenantid
       remoteRef:
         key: azuretenantid
-    - secretKey: subscriptionid
+    - secretKey: azuresubscriptionid
       remoteRef:
-        key: subscriptionid
-    - secretKey: resourcegroupname
+        key: azuresubscriptionid
+    - secretKey: azurereourcegroupname
       remoteRef:
-        key: resourcegroupname
+        key: azurereourcegroupname
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
