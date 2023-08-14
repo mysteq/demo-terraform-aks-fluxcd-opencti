@@ -1,0 +1,51 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: opencti-rabbitmq
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: elastic-operator
+  namespace: elastic-system
+spec:
+  egress:
+  - ports:
+    - port: 53
+      protocol: UDP
+  - ports:
+    - port: 443
+      protocol: TCP
+    to:
+    - ipBlock:
+        cidr: 10.0.0.1/32
+  - ports:
+    - port: 9200
+      protocol: TCP
+    to:
+    - namespaceSelector:
+        matchExpressions:
+        - key: eck.k8s.elastic.co/tenant
+          operator: In
+          values:
+          - opencti-elasticsearch
+      podSelector:
+        matchLabels:
+          common.k8s.elastic.co/type: elasticsearch
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 10.0.0.1/32
+    ports:
+    - port: 9443
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: elastic-operator
