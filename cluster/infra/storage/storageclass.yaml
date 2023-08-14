@@ -12,6 +12,7 @@ mountOptions:
   - gid=1000
   - nosharesock
 parameters:
+  skuName: Standard_LRS
   storageAccount: stdemoakswesteue84a
   resourceGroup: demo-aks-westeu
   shareName: opencti-${pvc.metadata.name}
