@@ -116,10 +116,10 @@ spec:
           - name: elasticsearch
             resources:
               requests:
-                memory: 12Gi
+                memory: 10Gi
                 cpu: 2
               limits:
-                memory: 12Gi
+                memory: 10Gi
                 cpu: 2
         #     volumeMounts:
         #     - name: secrets-store01-inline
