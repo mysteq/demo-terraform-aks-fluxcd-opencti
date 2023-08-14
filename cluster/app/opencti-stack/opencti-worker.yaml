@@ -38,6 +38,20 @@ spec:
             requests:
               memory: 56Mi
               cpu: "100m"
+      tolerations:
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "kubernetes.azure.com/scalesetpriority"
+                operator: In
+                values:
+                - "spot"
       #     volumeMounts:
       #     - name: secrets-store01-inline
       #       mountPath: "/mnt/secrets-store"
