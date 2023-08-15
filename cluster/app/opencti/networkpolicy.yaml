@@ -70,7 +70,8 @@ spec:
     - port: 9000
       protocol: TCP
     to:
-    - podSelector:
+    - namespaceSelector: {}
+      podSelector:
         matchLabels:
           app: minio
   - ports:
