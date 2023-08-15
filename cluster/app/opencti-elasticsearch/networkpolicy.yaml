@@ -41,9 +41,12 @@ spec:
     - namespaceSelector:
         matchLabels:
           eck.k8s.elastic.co/tenant: opencti-elasticsearch
-    - podSelector:
+    - namespaceSelector:
         matchLabels:
-           app.kubernetes.io/name: opencti
+          kubernetes.io/metadata.name: opencti
+      podSelector:
+        matchLabels:
+           app: opencti
     ports:
     - port: 9200
       protocol: TCP
