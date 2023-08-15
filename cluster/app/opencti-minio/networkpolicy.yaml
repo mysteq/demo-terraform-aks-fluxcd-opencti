@@ -58,7 +58,7 @@ spec:
   - Ingress
   - Egress
   ingress:
-  - to:
+  - from:
     - podSelector:
         matchLabels:
           app: minio-job
