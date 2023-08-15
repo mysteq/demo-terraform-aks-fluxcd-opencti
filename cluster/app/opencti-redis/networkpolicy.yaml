@@ -18,8 +18,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/component: redis
-      app.kubernetes.io/name: redis
+      app: redis
   policyTypes:
   - Ingress
   - Egress
@@ -27,8 +26,7 @@ spec:
   - to:
     - podSelector:
         matchLabels:
-          app.kubernetes.io/component: redis
-          app.kubernetes.io/name: redis
+          app: redis
     ports:
     - port: 6379
     - port: 16379 # clustering
@@ -36,8 +34,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app.kubernetes.io/component: redis
-          app.kubernetes.io/name: redis
+          app: redis
     ports:
     - port: 6379
     - port: 16379 # clustering
@@ -54,5 +51,4 @@ spec:
     from:
     - podSelector:
         matchLabels:
-          app.kubernetes.io/component: opencti
-          app.kubernetes.io/name: opencti
+          app: opencti
