@@ -9,6 +9,13 @@ spec:
   policyTypes:
   - Ingress
   - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-allow
+  namespace: opencti-minio
+spec:
   egress:
   - ports:
     - port: 53
