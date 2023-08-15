@@ -164,7 +164,7 @@ module "kubernetes" {
     }
     enable_auto_scaling = true
     vm_size             = "Standard_B2ms"
-#    node_taints         = ["CriticalAddonsOnly=true:NoSchedule"]
+    #    node_taints         = ["CriticalAddonsOnly=true:NoSchedule"]
   }
 
   additional_node_pools = [
@@ -182,7 +182,8 @@ module "kubernetes" {
     },
     {
       name                = "spot1"
-      min_count           = 1
+      os_sku              = "AzureLinux"
+      min_count           = 0
       max_count           = 3
       enable_auto_scaling = true
       vm_size             = "Standard_E4_v3"
@@ -198,10 +199,28 @@ module "kubernetes" {
     },
     {
       name                = "spot2"
-      min_count           = 1
+      os_sku              = "AzureLinux"
+      min_count           = 0
       max_count           = 3
       enable_auto_scaling = true
       vm_size             = "Standard_E4_v4"
+      spot_max_price      = "0.04"
+      eviction_policy     = "Delete"
+      node_taints         = ["kubernetes.azure.com/scalesetpriority=spot:NoSchedule"]
+      priority            = "Spot"
+      linux_os_config = {
+        sysctl_config = {
+          "vm_max_map_count" = "262144"
+        }
+      }
+    },
+    {
+      name                = "spot3"
+      os_sku              = "AzureLinux"
+      min_count           = 0
+      max_count           = 2
+      enable_auto_scaling = true
+      vm_size             = "Standard_E4s_v3"
       spot_max_price      = "0.04"
       eviction_policy     = "Delete"
       node_taints         = ["kubernetes.azure.com/scalesetpriority=spot:NoSchedule"]
