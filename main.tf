@@ -148,6 +148,7 @@ module "kubernetes" {
   location            = azurerm_resource_group.demo.location
 
   workload_identity_enabled = true
+  automatic_channel_upgrade = "node-image"
 
   network_profile = {
     network_plugin = "azure"
