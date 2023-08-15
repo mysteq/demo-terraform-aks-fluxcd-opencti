@@ -98,5 +98,9 @@ spec:
     - podSelector:
         matchLabels:
           app: minio
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          app: opencti
     ports:
     - port: 9000
