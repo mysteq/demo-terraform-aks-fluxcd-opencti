@@ -28,7 +28,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-inter-node-traffic
+  name: allow-postjob-egress
   namespace: opencti-minio
 spec:
   podSelector:
@@ -41,15 +41,13 @@ spec:
   - to:
     - podSelector:
         matchLabels:
-          app: redis
+          app: minio
     ports:
-    - port: 6379
-    - port: 16379 # clustering
+    - port: 9000
   ingress:
   - to:
     - podSelector:
         matchLabels:
-          app: redis
+          app: minio
     ports:
-    - port: 6379
-    - port: 16379 # clustering
+    - port: 9000
