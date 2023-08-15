@@ -104,6 +104,10 @@ spec:
       podSelector:
         matchLabels:
           app.kubernetes.io/name: nginx-ingress
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: opencti
+      podSelector: {}
     ports:
     - port: 8080
       protocol: TCP
