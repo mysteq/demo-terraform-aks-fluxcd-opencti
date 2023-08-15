@@ -97,6 +97,13 @@ spec:
           - "172.16.0.0/12"
           - "192.168.0.0/16"
   ingress:
-  - ports:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: nginx-ingress
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: nginx-ingress
+    ports:
     - port: 8080
       protocol: TCP
