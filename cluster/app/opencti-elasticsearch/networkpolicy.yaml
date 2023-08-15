@@ -13,9 +13,36 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  name: default-allow
+  namespace: opencti
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+    to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: opencti-elasticsearch
   namespace: opencti-elasticsearch
 spec:
+  podSelector:
+    matchLabels:
+      common.k8s.elastic.co/type: elasticsearch
+  policyTypes:
+  - Ingress
+  - Egress
   egress:
   - ports:
     - port: 9300
@@ -27,9 +54,6 @@ spec:
       podSelector:
         matchLabels:
           common.k8s.elastic.co/type: elasticsearch
-  - ports:
-    - port: 53
-      protocol: UDP
   ingress:
   - from:
     - namespaceSelector:
@@ -60,6 +84,3 @@ spec:
     ports:
     - port: 9300
       protocol: TCP
-  podSelector:
-    matchLabels:
-      common.k8s.elastic.co/type: elasticsearch
