@@ -43,9 +43,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: 
-      - minio-post-job
-      - minio
+      app: minio-post-job
   policyTypes:
   - Ingress
   - Egress
@@ -58,7 +56,7 @@ spec:
     - port: 6379
     - port: 16379 # clustering
   ingress:
-  - from:
+  - to:
     - podSelector:
         matchLabels:
           app: redis
