@@ -34,55 +34,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-postjob-egress
-  namespace: opencti-minio
-spec:
-  podSelector:
-    matchLabels:
-      app: minio-job
-  policyTypes:
-  - Ingress
-  - Egress
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: minio
-    ports:
-    - port: 9000
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-postjob-ingress
-  namespace: opencti-minio
-spec:
-  podSelector:
-    matchLabels:
-      app: minio
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: minio-job
-    - podSelector:
-        matchLabels:
-          app: minio
-    ports:
-    - port: 9000
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
   name: allow-inter-node-traffic
   namespace: opencti-minio
 spec:
-  podSelector:
-    matchLabels:
-      app: minio
+  podSelector: {}
   policyTypes:
   - Ingress
   - Egress
@@ -98,6 +53,9 @@ spec:
     - podSelector:
         matchLabels:
           app: minio
+    - podSelector:
+        matchLabels:
+          app: minio-job
     - namespaceSelector: {}
       podSelector:
         matchLabels:
