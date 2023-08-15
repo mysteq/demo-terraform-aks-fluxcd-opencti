@@ -154,10 +154,6 @@ spec:
                   - "spot"
     config:
       xpack.ml.enabled: false
-      discovery.seed_hosts:
-      - elasticsearch-es-default-2
-      - elasticsearch-es-default-1
-      - elasticsearch-es-default-0
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
