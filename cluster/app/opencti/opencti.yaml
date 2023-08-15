@@ -224,7 +224,7 @@ spec:
                 name: opencti-secret
                 key: opencti-token
           - name: APP__APP_LOGS__LOGS_LEVEL
-            value: "info"
+            value: "debug"
           - name: REDIS__HOSTNAME
             value: redis.opencti-redis
           - name: REDIS__PORT
