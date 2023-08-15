@@ -182,7 +182,6 @@ kind: Deployment
 metadata:
   labels:
     app: opencti
-    minio-client: "true"
     # azure.workload.identity/use: "true"
   name: opencti
   namespace: opencti
@@ -196,6 +195,7 @@ spec:
     metadata:
       labels:
         app: opencti
+        minio-client: "true"
     spec:
       # serviceAccountName: opencti-sa
       containers:
