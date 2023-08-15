@@ -37,10 +37,13 @@ metadata:
   name: elastic-operator
   namespace: elastic-system
 spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: elastic-operator
+  policyTypes:
+  - Ingress
+  - Egress
   egress:
-  - ports:
-    - port: 53
-      protocol: UDP
   - ports:
     - port: 443
       protocol: TCP
@@ -67,6 +70,3 @@ spec:
     ports:
     - port: 9443
       protocol: TCP
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/name: elastic-operator
