@@ -5,7 +5,7 @@ resources:
   - storage.yaml
   - cert-manager.yaml
   - external-secrets.yaml
-  - external-dns.yaml
+#  - external-dns.yaml
   - secret-store.yaml
   - nginx-ingress.yaml
   - elastic-system.yaml
