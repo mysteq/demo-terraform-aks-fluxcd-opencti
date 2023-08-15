@@ -16,12 +16,18 @@ metadata:
   name: default-allow
   namespace: opencti-minio
 spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
   egress:
   - ports:
     - port: 53
       protocol: UDP
+    - port: 53
+      protocol: TCP
     to:
-    - podSelector:
+    - namespaceSelector: {}
+      podSelector:
         matchLabels:
           k8s-app: kube-dns
   - ports:
