@@ -97,13 +97,6 @@ spec:
           - "172.16.0.0/12"
           - "192.168.0.0/16"
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: opencti
-    - namespaceSelector:
-        matchLabels:
-          name: nginx-ingress
     ports:
     - port: 8080
       protocol: TCP
