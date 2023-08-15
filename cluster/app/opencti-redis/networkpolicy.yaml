@@ -49,6 +49,7 @@ spec:
   - ports:
     - port: 6379
     from:
-    - podSelector:
+    - namespaceSelector: {}
+      podSelector:
         matchLabels:
           app: opencti

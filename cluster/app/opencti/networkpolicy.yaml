@@ -63,7 +63,8 @@ spec:
     - port: 6379
       protocol: TCP
     to:
-    - podSelector:
+    - namespaceSelector: {}
+      podSelector:
         matchLabels:
           app: redis
   - ports:
@@ -80,7 +81,8 @@ spec:
     - port: 15672
       protocol: TCP
     to:
-    - podSelector:
+    - namespaceSelector: {}
+      podSelector:
         matchLabels:
           app.kubernetes.io/name: rabbitmq
           app.kubernetes.io/component: rabbitmq
