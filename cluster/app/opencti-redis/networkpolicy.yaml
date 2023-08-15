@@ -48,17 +48,11 @@ metadata:
   name: allow-redis-traffic
   namespace: opencti-redis
 spec:
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/component: redis
-      app.kubernetes.io/name: redis
-  policyTypes:
-  - Ingress
-  - from:
+  ingress:
+  - ports:
+    - port: 6379
+    from:
     - podSelector:
         matchLabels:
           app.kubernetes.io/component: opencti
           app.kubernetes.io/name: opencti
-  ingress:
-  - ports:
-    - port: 6379
