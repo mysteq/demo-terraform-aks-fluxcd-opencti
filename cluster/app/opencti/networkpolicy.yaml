@@ -49,7 +49,9 @@ spec:
     - namespaceSelector:
         matchLabels:
           name: opencti
+    - namespaceSelector:
+        matchLabels:
+          name: nginx-ingress
     ports:
     - port: 8080
       protocol: TCP
-      
