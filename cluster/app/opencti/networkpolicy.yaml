@@ -37,6 +37,10 @@ metadata:
   name: opencti
   namespace: opencti
 spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
   egress:
   - ports:
     - port: 8080
