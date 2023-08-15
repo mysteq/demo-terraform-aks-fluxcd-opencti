@@ -46,7 +46,8 @@ spec:
   - Egress
   egress:
   - to:
-    - podSelector:
+    - namespaceSelector: {}
+      podSelector:
         matchLabels:
           app.kubernetes.io/component: rabbitmq
           app.kubernetes.io/name: rabbitmq
@@ -57,7 +58,8 @@ spec:
       endPort: 35682
   ingress:
   - from:
-    - podSelector:
+    - namespaceSelector: {}
+      podSelector:
         matchLabels:
           app.kubernetes.io/component: rabbitmq
           app.kubernetes.io/name: rabbitmq
