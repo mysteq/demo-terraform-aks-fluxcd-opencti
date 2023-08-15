@@ -28,9 +28,12 @@ spec:
     - port: 9200
       protocol: TCP
     to:
-    - podSelector:
+    - namespaceSelector:
         matchLabels:
-          app.kubernetes.io/name: opencti-elasticsearch
+          eck.k8s.elastic.co/tenant: opencti-elasticsearch
+      podSelector:
+        matchLabels:
+          common.k8s.elastic.co/type: elasticsearch
   - ports:
     - port: 6379
       protocol: TCP
