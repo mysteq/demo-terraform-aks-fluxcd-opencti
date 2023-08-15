@@ -60,7 +60,8 @@ spec:
   - Ingress
   ingress:
   - from:
-    - podSelector:
+    - namespaceSelector: {}
+      podSelector:
         matchLabels:
           app.kubernetes.io/component: rabbitmq-operator
     ports:
