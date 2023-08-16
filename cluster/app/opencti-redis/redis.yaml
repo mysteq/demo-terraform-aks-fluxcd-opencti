@@ -62,13 +62,18 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-      volumeMounts:
-        - name: conf
-          mountPath: /conf
-          readOnly: false
-        - name: data
-          mountPath: /data
-          readOnly: false
+        volumeMounts:
+          - name: conf
+            mountPath: /conf
+            readOnly: false
+          - name: data
+            mountPath: /data
+            readOnly: false
+      volumes:
+      - name: conf
+        configMap:
+          name: redis-cluster
+          defaultMode: 0755
       tolerations:
       - key: "kubernetes.azure.com/scalesetpriority"
         operator: "Equal"
@@ -90,11 +95,6 @@ spec:
         maxSkew: 1
         topologyKey: kubernetes.azure.com/agentpool
         whenUnsatisfiable: ScheduleAnyway
-      volumes:
-      - name: conf
-        configMap:
-          name: redis-cluster
-          defaultMode: 0755
   volumeClaimTemplates:
   - metadata:
       name: redis-pvc
