@@ -152,9 +152,15 @@ spec:
                   operator: In
                   values:
                   - "spot"
+        topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              common.k8s.elastic.co/type: elasticsearch
+          maxSkew: 1
+          topologyKey: kubernetes.azure.com/agentpool
+          whenUnsatisfiable: ScheduleAnyway
     config:
       xpack.ml.enabled: false
-      index.number_of_replicas: 3
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
