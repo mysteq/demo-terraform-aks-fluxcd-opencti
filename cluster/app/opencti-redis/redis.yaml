@@ -66,7 +66,7 @@ spec:
         - name: conf
           mountPath: /conf
           readOnly: false
-        - name: data
+        - name: redis-pvc
           mountPath: /data
           readOnly: false
       volumes:
@@ -74,9 +74,6 @@ spec:
         configMap:
           name: redis-cluster
           defaultMode: 0755
-      - name: data
-        persistentVolumeClaim:
-          claimName: redis-pvc
       tolerations:
       - key: "kubernetes.azure.com/scalesetpriority"
         operator: "Equal"
