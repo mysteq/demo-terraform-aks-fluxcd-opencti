@@ -63,12 +63,12 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         volumeMounts:
-          - name: conf
-            mountPath: /conf
-            readOnly: false
-          - name: data
-            mountPath: /data
-            readOnly: false
+        - name: conf
+          mountPath: /conf
+          readOnly: false
+        - name: data
+          mountPath: /data
+          readOnly: false
       volumes:
       - name: conf
         configMap:
