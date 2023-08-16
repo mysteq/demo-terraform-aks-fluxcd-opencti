@@ -48,9 +48,10 @@ spec:
         app: redis
     spec:
       securityContext: 
-        runAsUser: 1000
-        runAsGroup: 1000 
-        fsGroup: 1000
+        runAsUser: 999
+        runAsGroup: 999 
+        fsGroup: 999
+        runAsNonRoot: true
       containers:
       - name: redis
         image: redis:7.0.11
@@ -74,9 +75,10 @@ spec:
           mountPath: /conf
           readOnly: false
         securityContext: 
-          runAsUser: 1000 
-          runAsGroup: 1000 
-          fsGroup: 1000
+          runAsUser: 999 
+          runAsGroup: 999 
+          fsGroup: 999
+          runAsNonRoot: true
       volumes:
       - name: conf
         configMap:
@@ -109,6 +111,12 @@ spec:
     spec:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: azurefile-csi-opencti
+      mountOptions:
+      - mfsymlinks
+      - actimeo=30
+      - uid=999
+      - gid=999
+      - nosharesock
       resources:
         requests:
           storage: 5Gi
