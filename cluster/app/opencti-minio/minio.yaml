@@ -81,6 +81,9 @@ spec:
       storageClass: azurefile-csi-opencti
       size: 5Gi
     replicas: 3
+    podDisruptionBudget:
+      enabled: true
+      maxUnavailable: 1
     resources:
       requests:
         cpu: 250m
@@ -103,6 +106,13 @@ spec:
               operator: In
               values:
               - "spot"
+    topologySpreadConstraints:
+    - labelSelector:
+        matchLabels:
+          common.k8s.elastic.co/type: elasticsearch
+      maxSkew: 1
+      topologyKey: kubernetes.azure.com/agentpool
+      whenUnsatisfiable: ScheduleAnyway
     postJob:
       tolerations:
       - key: "kubernetes.azure.com/scalesetpriority"
