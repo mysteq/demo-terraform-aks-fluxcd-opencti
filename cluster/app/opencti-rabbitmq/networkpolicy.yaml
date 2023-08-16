@@ -56,6 +56,12 @@ spec:
     - port: 25672 # clustering
     - port: 35672 # CLI tooling
       endPort: 35682
+  - ports:
+    - port: 443
+      protocol: TCP
+    to:
+    - ipBlock:
+        cidr: 10.0.0.1/32
   ingress:
   - from:
     - namespaceSelector: {}
