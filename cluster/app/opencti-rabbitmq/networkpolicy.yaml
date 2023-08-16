@@ -60,10 +60,6 @@ spec:
     - port: 443
       protocol: TCP
     to:
-    - namespaceSelector: {}
-      podSelector:
-        matchLabels:
-          app.kubernetes.io/component: apiserver
     - ipBlock:
         cidr: 10.0.0.1/32
   ingress:
