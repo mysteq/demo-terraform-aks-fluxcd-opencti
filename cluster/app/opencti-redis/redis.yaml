@@ -47,10 +47,6 @@ spec:
       labels:
         app: redis
     spec:
-      securityContext: 
-        runAsUser: 999 
-        runAsGroup: 999 
-        fsGroup: 999
       containers:
       - name: redis
         image: redis:7.0.11
@@ -73,6 +69,10 @@ spec:
         - name: conf
           mountPath: /conf
           readOnly: false
+        securityContext: 
+          runAsUser: 999 
+          runAsGroup: 999 
+          fsGroup: 999
       volumes:
       - name: conf
         configMap:
