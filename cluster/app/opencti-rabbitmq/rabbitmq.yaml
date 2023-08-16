@@ -111,13 +111,6 @@ spec:
             operator: In
             values:
             - "spot"
-  topologySpreadConstraints:
-  - labelSelector:
-      matchLabels:
-        app.kubernetes.io/name: rabbitmq
-    maxSkew: 1
-    topologyKey: kubernetes.azure.com/agentpool
-    whenUnsatisfiable: ScheduleAnyway
   override:
     statefulSet:
       spec:
@@ -137,6 +130,13 @@ spec:
                       secretKeyRef:
                         name: rabbitmq-config-secret
                         key: password
+            topologySpreadConstraints:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: rabbitmq
+              maxSkew: 1
+              topologyKey: kubernetes.azure.com/agentpool
+              whenUnsatisfiable: ScheduleAnyway
             #     volumeMounts:
             #       - name: secrets-store01-inline
             #         mountPath: "/mnt/secrets-store"
