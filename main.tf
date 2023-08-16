@@ -36,23 +36,32 @@ resource "azurerm_user_assigned_identity" "demo" {
   tags = local.tags
 }
 
+resource "azurerm_user_assigned_identity" "demo-aks" {
+  location            = azurerm_resource_group.demo.location
+  name                = "demo-aks-westeu-identity"
+  resource_group_name = azurerm_resource_group.demo.name
+
+  tags = local.tags
+}
+
 resource "random_id" "id" {
   byte_length = 2
 }
 
 resource "azurerm_key_vault" "demo" {
-  name                       = "demo-aks-westeu-${lower(random_id.id.hex)}"
-  location                   = azurerm_resource_group.demo.location
-  resource_group_name        = azurerm_resource_group.demo.name
-  tenant_id                  = data.azurerm_client_config.current.tenant_id
-  soft_delete_retention_days = 7
-  purge_protection_enabled   = false
-  enable_rbac_authorization  = true
+  name                        = "demo-aks-westeu-${lower(random_id.id.hex)}"
+  location                    = azurerm_resource_group.demo.location
+  resource_group_name         = azurerm_resource_group.demo.name
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = true
+  enable_rbac_authorization   = true
+  enabled_for_disk_encryption = true
 
   sku_name = "standard"
 
   network_acls {
-    bypass                     = "None"
+    bypass                     = "AzureServices"
     default_action             = "Deny"
     ip_rules                   = ["79.160.225.150"]
     virtual_network_subnet_ids = [azurerm_subnet.demo-aks.id]
@@ -119,6 +128,93 @@ resource "azurerm_key_vault_key" "demo" {
   tags       = local.tags
 }
 
+resource "azurerm_key_vault_key" "kms" {
+  name         = "etcd-encryption"
+  key_vault_id = azurerm_key_vault.demo.id
+  key_type     = "RSA"
+  key_size     = 2048
+  key_opts = [
+    "decrypt",
+    "encrypt",
+    "sign",
+    "unwrapKey",
+    "verify",
+    "wrapKey",
+  ]
+
+  # rotation_policy {
+  #   automatic {
+  #     time_before_expiry = "P30D"
+  #   }
+
+  #   expire_after         = "P90D"
+  #   notify_before_expiry = "P29D"
+  # }
+
+  depends_on = [azurerm_role_assignment.demo_me]
+  tags       = local.tags
+}
+
+resource "azurerm_role_assignment" "demo_kv_aks" {
+  scope                = azurerm_key_vault.demo.id
+  role_definition_name = "Key Vault Crypto User"
+  principal_id         = azurerm_user_assigned_identity.demo-aks.principal_id
+}
+
+resource "azurerm_role_assignment" "demo_kv_aks_contrib" {
+  scope                = azurerm_key_vault.demo.id
+  role_definition_name = "Key Vault Contributor"
+  principal_id         = azurerm_user_assigned_identity.demo-aks.principal_id
+}
+
+resource "azurerm_key_vault_key" "des_key" {
+  name         = "des-key"
+  key_vault_id = azurerm_key_vault.demo.id
+  key_type     = "RSA"
+  key_size     = 2048
+  key_opts = [
+    "decrypt",
+    "encrypt",
+    "sign",
+    "unwrapKey",
+    "verify",
+    "wrapKey",
+  ]
+
+  rotation_policy {
+    automatic {
+      time_before_expiry = "P120D"
+    }
+
+    expire_after         = "P180D"
+    notify_before_expiry = "P160D"
+  }
+
+  depends_on = [azurerm_role_assignment.demo_me]
+  tags       = local.tags
+}
+
+resource "azurerm_disk_encryption_set" "des" {
+  key_vault_key_id          = azurerm_key_vault_key.des_key.id
+  name                      = "des"
+  resource_group_name       = azurerm_resource_group.demo.name
+  location                  = azurerm_resource_group.demo.location
+  auto_key_rotation_enabled = true
+
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.demo-aks.id,
+    ]
+  }
+}
+
+resource "azurerm_role_assignment" "demo_kv_des" {
+  scope                = azurerm_key_vault.demo.id
+  role_definition_name = "Key Vault Crypto Service Encryption User"
+  principal_id         = azurerm_user_assigned_identity.demo-aks.principal_id
+}
+
 resource "azurerm_virtual_network" "demo" {
   name                = "demo-aks-westeu"
   resource_group_name = azurerm_resource_group.demo.name
@@ -128,11 +224,18 @@ resource "azurerm_virtual_network" "demo" {
   tags          = local.tags
 }
 
+resource "azurerm_role_assignment" "demo_kv_aks_net" {
+  scope                = azurerm_virtual_network.demo.id
+  role_definition_name = "Network Contributor"
+  principal_id         = azurerm_user_assigned_identity.demo-aks.principal_id
+}
+
 resource "azurerm_subnet" "demo-aks" {
-  name                 = "aks"
-  resource_group_name  = azurerm_resource_group.demo.name
-  virtual_network_name = azurerm_virtual_network.demo.name
-  address_prefixes     = ["10.140.0.0/22"]
+  name                                      = "aks"
+  resource_group_name                       = azurerm_resource_group.demo.name
+  virtual_network_name                      = azurerm_virtual_network.demo.name
+  address_prefixes                          = ["10.140.0.0/22"]
+  private_endpoint_network_policies_enabled = true
 
   service_endpoints = ["Microsoft.KeyVault", "Microsoft.Storage"]
 }
@@ -144,11 +247,22 @@ module "kubernetes" {
   #  source = "github.com/amestofortytwo/terraform-azurerm-aks?ref=53fa0f2f4b3e6ce3b7324fed6b4d2843b8a9cfbf"
 
   name                = "demo-aks-westeu"
+  kubernetes_version  = "1.27"
   resource_group_name = azurerm_resource_group.demo.name
   location            = azurerm_resource_group.demo.location
 
   workload_identity_enabled = true
   automatic_channel_upgrade = "node-image"
+
+  identity = {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.demo-aks.id]
+  }
+
+  kms_enabled                  = true
+  kms_key_vault_key_id         = azurerm_key_vault_key.kms.id
+  kms_key_vault_network_access = "Private"
+  disk_encryption_set_id       = azurerm_disk_encryption_set.des.id
 
   network_profile = {
     network_plugin = "azure"
@@ -157,14 +271,15 @@ module "kubernetes" {
   }
 
   default_node_pool = {
-    name = "default"
+    name   = "default"
+    os_sku = "AzureLinux"
     autoscale = {
       min_count = 1
       max_count = 3
     }
-    enable_auto_scaling = true
-    vm_size             = "Standard_B2ms"
-    #    node_taints         = ["CriticalAddonsOnly=true:NoSchedule"]
+    enable_auto_scaling          = true
+    vm_size                      = "Standard_B2ms"
+    only_critical_addons_enabled = true
   }
 
   additional_node_pools = [
@@ -377,7 +492,7 @@ resource "azurerm_role_assignment" "demo_sa_me" {
 resource "azurerm_role_assignment" "demo_sa_aks" {
   scope                = azurerm_storage_account.opencti.id
   role_definition_name = "Storage Account Contributor"
-  principal_id         = module.kubernetes.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.demo-aks.principal_id
 }
 
 resource "azurerm_key_vault_secret" "tenantid" {
