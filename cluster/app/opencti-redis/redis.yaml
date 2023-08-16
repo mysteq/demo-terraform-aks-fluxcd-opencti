@@ -110,13 +110,7 @@ spec:
       name: redis-pvc
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: azurefile-csi-opencti
-      mountOptions:
-      - mfsymlinks
-      - actimeo=30
-      - uid=999
-      - gid=999
-      - nosharesock
+      storageClassName: azurefile-csi-opencti-uid999
       resources:
         requests:
           storage: 5Gi
