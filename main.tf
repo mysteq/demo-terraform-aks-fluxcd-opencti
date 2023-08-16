@@ -298,8 +298,8 @@ module "kubernetes" {
     {
       name                = "spot1"
       os_sku              = "AzureLinux"
-      min_count           = 0
-      max_count           = 3
+      min_count           = 1
+      max_count           = 2
       enable_auto_scaling = true
       vm_size             = "Standard_E4_v3"
       spot_max_price      = "0.04"
@@ -315,8 +315,8 @@ module "kubernetes" {
     {
       name                = "spot2"
       os_sku              = "AzureLinux"
-      min_count           = 0
-      max_count           = 3
+      min_count           = 1
+      max_count           = 2
       enable_auto_scaling = true
       vm_size             = "Standard_E4_v4"
       spot_max_price      = "0.04"
@@ -332,7 +332,7 @@ module "kubernetes" {
     {
       name                = "spot3"
       os_sku              = "AzureLinux"
-      min_count           = 0
+      min_count           = 1
       max_count           = 2
       enable_auto_scaling = true
       vm_size             = "Standard_E4s_v3"
