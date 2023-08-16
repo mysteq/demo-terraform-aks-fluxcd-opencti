@@ -62,6 +62,8 @@ spec:
     to:
     - ipBlock:
         cidr: 10.0.0.1/32
+    - ipBlock:
+        cidr: 20.31.48.18/32
   ingress:
   - from:
     - namespaceSelector: {}
