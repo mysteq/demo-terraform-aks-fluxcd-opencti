@@ -109,7 +109,7 @@ spec:
     topologySpreadConstraints:
     - labelSelector:
         matchLabels:
-          common.k8s.elastic.co/type: elasticsearch
+          app: minio
       maxSkew: 1
       topologyKey: kubernetes.azure.com/agentpool
       whenUnsatisfiable: ScheduleAnyway
