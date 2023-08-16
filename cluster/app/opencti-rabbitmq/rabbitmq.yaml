@@ -97,6 +97,27 @@ spec:
   persistence:
     storageClassName: azurefile-csi-opencti
     storage: "5Gi"
+  tolerations:
+  - key: "kubernetes.azure.com/scalesetpriority"
+    operator: "Equal"
+    value: "spot"
+    effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "kubernetes.azure.com/scalesetpriority"
+            operator: In
+            values:
+            - "spot"
+  topologySpreadConstraints:
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: rabbitmq
+    maxSkew: 1
+    topologyKey: kubernetes.azure.com/agentpool
+    whenUnsatisfiable: ScheduleAnyway
   override:
     statefulSet:
       spec:
@@ -127,3 +148,13 @@ spec:
             #       readOnly: true
             #       volumeAttributes:
             #         secretProviderClass: "opencti-rabbitmq-secretprovider"
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: rabbitmq
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rabbitmq
