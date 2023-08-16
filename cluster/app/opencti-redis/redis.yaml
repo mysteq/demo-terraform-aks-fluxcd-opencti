@@ -48,9 +48,9 @@ spec:
         app: redis
     spec:
       securityContext: 
-        runAsUser: 1000 
-        runAsGroup: 1000 
-        fsGroup: 1000
+        runAsUser: 999 
+        runAsGroup: 999 
+        fsGroup: 999
       containers:
       - name: redis
         image: redis:7.0.11
