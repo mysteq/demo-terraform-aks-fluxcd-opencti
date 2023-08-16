@@ -229,8 +229,8 @@ spec:
             value: redis.opencti-redis
           - name: REDIS__PORT
             value: "6379"
-          - name: REDIS__MODE
-            value: "cluster"
+#          - name: REDIS__MODE
+#            value: "cluster"
           - name: ELASTICSEARCH__URL
             value: https://elasticsearch-es-http.opencti-elasticsearch:9200
           - name: ELASTICSEARCH__SSL__REJECT_UNAUTHORIZED
