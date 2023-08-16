@@ -67,11 +67,11 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         volumeMounts:
-        - name: conf
-          mountPath: /data/conf
-          readOnly: false
         - name: redis-pvc
           mountPath: /data
+          readOnly: false
+        - name: conf
+          mountPath: /data/conf
           readOnly: false
       volumes:
       - name: conf
