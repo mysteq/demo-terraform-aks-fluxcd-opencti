@@ -54,6 +54,13 @@ spec:
                 operator: In
                 values:
                 - "spot"
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app: redis
+        maxSkew: 1
+        topologyKey: kubernetes.azure.com/agentpool
+        whenUnsatisfiable: ScheduleAnyway
   volumeClaimTemplates:
   - metadata:
       name: redis-pvc
@@ -63,4 +70,14 @@ spec:
       resources:
         requests:
           storage: 5Gi
-
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis
+  namespace: opencti-redis
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: redis

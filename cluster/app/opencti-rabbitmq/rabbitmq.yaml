@@ -153,6 +153,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: rabbitmq
+  namespace: opencti-rabbitmq
 spec:
   maxUnavailable: 1
   selector:
