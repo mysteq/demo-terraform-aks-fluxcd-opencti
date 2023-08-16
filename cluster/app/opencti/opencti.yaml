@@ -243,6 +243,8 @@ spec:
               secretKeyRef:
                 name: opencti-secret
                 key: elasticsearch-password
+          - name: ELASTICSEARCH__NUMBER_OF_REPLICAS
+            value: "2"
           - name: MINIO__ENDPOINT
             value: minio.opencti-minio
           - name: MINIO__PORT
