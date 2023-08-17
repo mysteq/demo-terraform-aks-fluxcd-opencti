@@ -12,7 +12,7 @@ mountOptions:
   - gid=1000
   - nosharesock
 parameters:
-  storageAccount: stopenctiwe913a
+  storageAccount: stopenctiwe597f
   resourceGroup: rg-opencti-demo-westeu
   shareName: opencti-${pvc.metadata.name}
   secretName: azure-storage-account-opencti-secret
@@ -21,5 +21,5 @@ provisioner: file.csi.azure.com
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
 #  skuName: Standard_LRS
-#  storageAccount: stopenctiwe913a
-#  resourceGroup: demo-aks-westeu
+#  storageAccount: stopenctiwe597f
+#  resourceGroup: rg-opencti-demo-westeu

@@ -13,7 +13,7 @@ patches:
         name: kustomize-controller
         namespace: flux-system
         annotations:
-          azure.workload.identity/client-id: 6745772f-fc78-4c40-92ed-1f1924c9e067
+          azure.workload.identity/client-id: 1b717d03-8a56-467b-a77b-eae4e853ec61
         labels:
           azure.workload.identity/use: "true"
   - patch: |-
