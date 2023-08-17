@@ -22,6 +22,10 @@ resource "azurerm_resource_group" "rg" {
   location = local.location
 
   tags = local.tags
+
+  provisioner "local-exec" {
+    command = "find cluster/ -type f -name '*.yaml' -exec  sed -i '' -r 's/resourceGroup: (.*)/resourceGroup: ${azurerm_resource_group.rg.name}/g' {} +"
+  }
 }
 
 data "azurerm_client_config" "current" {}
