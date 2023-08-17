@@ -105,7 +105,7 @@ spec:
   - secretName: elasticsearch-config-secret
   nodeSets:
   - name: default
-    count: 4
+    count: 5
     podTemplate:
       # metadata:
       #   labels:
@@ -116,10 +116,10 @@ spec:
           - name: elasticsearch
             resources:
               requests:
-                memory: 12Gi
+                memory: 10Gi
                 cpu: 1
               limits:
-                memory: 12Gi
+                memory: 10Gi
                 cpu: 2
         #     volumeMounts:
         #     - name: secrets-store01-inline
