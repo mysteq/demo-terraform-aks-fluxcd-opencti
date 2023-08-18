@@ -66,7 +66,7 @@ spec:
       labels:
         azure.workload.identity/use: "true"
       annotations:
-        azure.workload.identity/client-id: 1b717d03-8a56-467b-a77b-eae4e853ec61
+        azure.workload.identity/client-id: eefb77e4-3bec-4c5d-be25-eebeb242c6a0
     podAnnotations:
       azure.workload.identity/inject-proxy-sidecar: "true"
     podLabels:

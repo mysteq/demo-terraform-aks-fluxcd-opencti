@@ -77,7 +77,7 @@ resource "azurerm_key_vault" "kv" {
   network_acls {
     bypass                     = "AzureServices"
     default_action             = "Deny"
-    ip_rules                   = ["79.160.225.150"]
+    ip_rules                   = ["79.160.225.150", "87.248.1.150"]
     virtual_network_subnet_ids = [azurerm_subnet.snet.id]
   }
 
@@ -492,7 +492,7 @@ resource "azurerm_storage_account" "st" {
 
   network_rules {
     default_action             = "Deny"
-    ip_rules                   = ["79.160.225.150"]
+    ip_rules                   = ["79.160.225.150", "87.248.1.150"]
     virtual_network_subnet_ids = [azurerm_subnet.snet.id]
   }
 

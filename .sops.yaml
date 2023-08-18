@@ -2,4 +2,4 @@
 creation_rules:
   - path_regex: .*.yaml
     encrypted_regex: ^(data|stringData)$
-    azure_keyvault: https://kv-opencti-we-597f.vault.azure.net/keys/sops-key/3fcf9cedae114e17af29f2cfb94cbe2b
+    azure_keyvault: https://kv-opencti-we-bed0.vault.azure.net/keys/sops-key/b03f222851514460b329f35363f7e8df

@@ -23,7 +23,7 @@ spec:
 #   name: opencti-rabbitmq-sa
 #   namespace: opencti-rabbitmq
 #   annotations:
-#     azure.workload.identity/client-id: 1b717d03-8a56-467b-a77b-eae4e853ec61
+#     azure.workload.identity/client-id: eefb77e4-3bec-4c5d-be25-eebeb242c6a0
 #   labels:
 #     azure.workload.identity/use: "true"
 # ---
@@ -62,8 +62,8 @@ spec:
 #   parameters:
 #     usePodIdentity: "false"
 #     useVMManagedIdentity: "false"          
-#     clientID: "1b717d03-8a56-467b-a77b-eae4e853ec61"
-#     keyvaultName: kv-opencti-we-597f
+#     clientID: "eefb77e4-3bec-4c5d-be25-eebeb242c6a0"
+#     keyvaultName: kv-opencti-we-bed0
 #     tenantId: "bb73082a-b74c-4d39-aec0-41c77d6f4850"
 #     objects:  |
 #       array:
