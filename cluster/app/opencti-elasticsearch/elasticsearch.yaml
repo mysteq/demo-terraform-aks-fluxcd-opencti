@@ -161,14 +161,14 @@ spec:
           whenUnsatisfiable: ScheduleAnyway
     config:
       xpack.ml.enabled: false
-    # volumeClaimTemplates:
-    # - metadata:
-    #     name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
-    #   spec:
-    #     accessModes:
-    #     - ReadWriteOnce
-    #     resources:
-    #       requests:
-    #         storage: 5Gi
-    #     storageClassName: managed-csi
-    #     # storageClassName: azurefile-csi-opencti
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: managed-csi
+        # storageClassName: azurefile-csi-opencti

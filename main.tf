@@ -199,6 +199,12 @@ resource "azurerm_disk_encryption_set" "des" {
   }
 }
 
+resource "azurerm_role_assignment" "ra_identity_desreader" {
+  scope                = azurerm_disk_encryption_set.des.id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_user_assigned_identity.id_identity.principal_id
+}
+
 resource "azurerm_role_assignment" "ra_identity_kvcryptoserviceencryptionuser" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Crypto Service Encryption User"
