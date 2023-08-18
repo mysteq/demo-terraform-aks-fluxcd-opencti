@@ -170,5 +170,5 @@ spec:
         resources:
           requests:
             storage: 5Gi
-        storageClassName: azuredisk-csi
+        storageClassName: managed-csi
         # storageClassName: azurefile-csi-opencti
