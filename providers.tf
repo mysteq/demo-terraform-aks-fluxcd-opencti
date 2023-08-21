@@ -18,14 +18,14 @@ terraform {
     storage_account_name = "tfstateaks54355"
     container_name       = "tfstateaks"
     key                  = "tfstateaks.tfstate"
-    subscription_id = "87e43d6c-337a-44f8-b908-c4b12dd914a9"
+    subscription_id      = "87e43d6c-337a-44f8-b908-c4b12dd914a9"
   }
 }
 
 provider "azurerm" {
-  features {     
+  features {
     resource_group {
-       prevent_deletion_if_contains_resources = false
+      prevent_deletion_if_contains_resources = false
     }
   }
 

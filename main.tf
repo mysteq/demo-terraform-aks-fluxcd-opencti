@@ -485,7 +485,7 @@ resource "azurerm_federated_identity_credential" "fic_secret-store" {
 }
 
 resource "azurerm_storage_account" "st" {
-  name                             = "st${replace(local.secondary_suffix,"-","")}${lower(random_id.id.hex)}"
+  name                             = "st${replace(local.secondary_suffix, "-", "")}${lower(random_id.id.hex)}"
   resource_group_name              = azurerm_resource_group.rg.name
   location                         = azurerm_resource_group.rg.location
   account_tier                     = "Standard"
